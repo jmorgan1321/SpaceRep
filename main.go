@@ -33,7 +33,7 @@ func init() {
 <div class="back">
     <p><b>{{.Word}}</b> {{.Desc}}</p>
     <img src="facts/image/{{.Image}}" height="150" width="150" />
-    <p>{{.Hint}}</p>
+    <p>({{.Hint}})</p>
 </div>`
 	tmpl1, _ := template.New("test").Parse(cardHtmlTmpl1)
 	g_env.TmplMap[core.WordCard.String()] = tmpl1
@@ -45,7 +45,7 @@ func init() {
 <div class="back">
     <p><b>{{.Word}}</b></p>
     <img src="facts/image/{{.Image}}" height="150" width="150" />
-    <p>{{.Hint}}</p>
+    <p>({{.Hint}})</p>
 </div>`
 	tmpl2, _ := template.New("test").Parse(cardHtmlTmpl2)
 	g_env.TmplMap[core.DescCard.String()] = tmpl2

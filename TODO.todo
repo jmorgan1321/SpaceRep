@@ -1,20 +1,37 @@
 Web Client:
     ☐ make history page
     ☐ make UI prettier
+        ☐ welcome page
+        ☐ SpaceRep - Pump Up your Learning! logo
     ☐ clean up navigation, header, footer
     ☐ separate out scripts and html
 
 Server:
-    ☐ remove global env
-    ✔ read cards from disk (short term) @done (14-10-05 19:28)
-    ✔ pass generated html from "getCard()" to client @done (14-10-05 19:28)
-    ✔ update card counts and buckets @done (14-10-05 19:28)
-    ☐ store history
-        ☐ some kind of json data file?
-    ✔ create cards on submit page @done (14-10-05 19:28)
-        ☐ check for duplicates
-    ☐ pull debug printing out into compile time files
-        ☐ package debug
-    ✔ Store all persistent data in one place @done (14-10-05 19:28)
-        ✔ git @done (14-10-05 19:29)
-    ☐ rename 'work' package to 'fact'
+    Features:
+        ✔ read cards from disk (short term) @done (14-10-05 19:28)
+        ✔ pass generated html from "getCard()" to client @done (14-10-05 19:28)
+        ✔ update card counts and buckets @done (14-10-05 19:28)
+        ☐ store history
+            ☐ some kind of json data file?
+        ✔ create cards on submit page @done (14-10-05 19:28)
+            ☐ check for duplicates
+        ☐ pull debug printing out into compile time files
+            ☐ package debug
+        ✔ Store all persistent data in one place @done (14-10-05 19:28)
+            ✔ git @done (14-10-05 19:29)
+
+    Refactor:
+        ☐ rename 'work' package to 'fact'
+        ☐ cleanup main
+            ☐ pullout templates into package 'fact'
+            ☐ remove global env
+            ☐ make flags
+                ☐ openBrowser
+                ☐ card data path
+            ☐ clean up handler code
+        ☐ WRITE UNIT TESTS!!
+        ☐ Error Handle
+
+Facts:
+    ☐ learn Minimal PPC Instr Set
+        http://www.plantation-productions.com/Webster/www.writegreatcode.com/Vol2/wgc2_OB.pdf

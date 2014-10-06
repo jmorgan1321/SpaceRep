@@ -1,0 +1,7 @@
+{
+	"Word": "add",
+	"Image": "add.jpg",
+	"Desc": "takes the val from r1 and r2 and",
+	"Hint": "new hint",
+	"Comp": 1
+}

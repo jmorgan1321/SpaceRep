@@ -1,0 +1,142 @@
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="mystyle.css">
+    </head>
+
+<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $("#SubmitBtn").on('click', function() {
+
+            var invalidInput = (
+                $("#WordTxt").val() === "" ||
+                $("#DescTxt").val() === "" ||
+                $("#ImageTxt").val() === "" ||
+                $("#HintTxt").val() === "" ||
+                $("#CompList").val() === 0
+                );
+
+            if (invalidInput) {
+                alert("Need input!")
+                return
+            }
+
+            var data = {
+                Word: $("#WordTxt").val(),
+                Desc: $("#DescTxt").val(),
+                Image:$("#ImageTxt").val(),
+                Hint: $("#HintTxt").val(),
+                Comp: parseInt($("#CompList").val()),
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/api/submit",
+                data: JSON.stringify(data),
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+
+                // success: success,
+                // dataType: dataType
+            })
+            .done(function(data, textStatus, xhr) {
+                alert("Created new card.")
+
+                $("#WordTxt").val("")
+                $("#DescTxt").val("")
+                $("#ImageTxt").val("")
+                $("#HintTxt").val("")
+                $("#CompList").val(0)
+
+            })
+            .always(function(a, textStatus, b) {
+                console.log("finished");
+                console.log("textStatus: " + textStatus);
+                console.dir(a);
+                console.dir(b);
+            });
+        });
+    });
+</script>
+
+
+<!--
+<section id="content"></section>
+ -->
+<body>
+    <!-- header -->
+    <nav>
+      <a href="new_card.html">New Card</a>
+      <a href="review.html">Review</a>
+    </nav>
+
+    <dir id="rows">
+        <dir class="row1">
+            <dir class="columns">
+                <div class="col1">
+                    <label>Word :</label>
+                </div>
+                <div class="col2">
+                    <textarea id="WordTxt">bcctr</textarea>
+                </div>
+            </dir>
+        </dir>
+
+        <dir class="row2">
+            <dir class="columns">
+                <div class="col1">
+                    <label>Desc :</label>
+                </div>
+                <div class="col2">
+                    <textarea id="DescTxt" rows="10">branches from the counter register and effects registers x, y, z</textarea>
+                </div>
+            </dir>
+        </dir>
+
+        <dir class="row3">
+            <dir class="columns">
+                <div class="col1">
+                    <label>Image:</label>
+                </div>
+                <div class="col2">
+                    <textarea id="ImageTxt">branch.jpg</textarea>
+                </div>
+            </dir>
+        </dir>
+
+
+        <dir class="row4">
+            <dir class="columns">
+                <div class="col1">
+                    <label>Hint :</label>
+                </div>
+                <div class="col2">
+                    <textarea id="HintTxt">Like that other one.</textarea>
+                </div>
+            </dir>
+        </dir>
+
+        <dir class="row5">
+            <dir class="columns">
+                <div class="col1">
+                    <label>Comp :</label>
+                </div>
+                <div class="col2">
+                    <select id="CompList">
+                        <option value="1">PowerPC Instruction</option>
+                        <option value="2">Precompiler Component</option>
+                        <option value="3">Emulator Component</option>
+                    </select>
+                </div>
+            </dir>
+        </dir>
+
+        <dir class="row6">
+            <button id="SubmitBtn">Submit</button>
+        </dir>
+    </dir>
+
+</body>
+
+</html>

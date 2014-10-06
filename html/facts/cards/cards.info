@@ -1,0 +1,38 @@
+[
+	{
+		"File": "bcctr",
+		"Type": 1,
+		"Count": 8,
+		"Bucket": 0
+	},
+	{
+		"File": "bcctr",
+		"Type": 2,
+		"Count": 8,
+		"Bucket": 0
+	},
+	{
+		"File": "add",
+		"Type": 2,
+		"Count": 8,
+		"Bucket": 0
+	},
+	{
+		"File": "addx",
+		"Type": 1,
+		"Count": 8,
+		"Bucket": 0
+	},
+	{
+		"File": "add",
+		"Type": 1,
+		"Count": 4,
+		"Bucket": 1
+	},
+	{
+		"File": "addx",
+		"Type": 2,
+		"Count": 4,
+		"Bucket": 1
+	}
+]

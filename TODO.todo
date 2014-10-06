@@ -1,0 +1,20 @@
+Web Client:
+  ☐ make history page
+  ☐ make UI prettier
+  ☐ clean up navigation, header, footer
+
+Server:
+  ☐ remove global env
+  ☐ read cards from disk (short term)
+  ☐ pass generated html from "getCard()" to client
+  ☐ update card counts and buckets
+  ☐ store history
+    ☐ some kind of json data file?
+  ☐ create cards on submit page
+    ☐ check for duplicates
+  ☐ pull debug printing out into compile time files
+    ☐ package debug
+  ☐ Store all persistent data in one place
+    ☐ dropbox/drive
+    ☐ history?
+    ☐ cards

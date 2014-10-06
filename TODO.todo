@@ -1,20 +1,18 @@
 Web Client:
-  ☐ make history page
-  ☐ make UI prettier
-  ☐ clean up navigation, header, footer
+    ☐ make history page
+    ☐ make UI prettier
+    ☐ clean up navigation, header, footer
 
 Server:
-  ☐ remove global env
-  ☐ read cards from disk (short term)
-  ☐ pass generated html from "getCard()" to client
-  ☐ update card counts and buckets
-  ☐ store history
-    ☐ some kind of json data file?
-  ☐ create cards on submit page
-    ☐ check for duplicates
-  ☐ pull debug printing out into compile time files
-    ☐ package debug
-  ☐ Store all persistent data in one place
-    ☐ dropbox/drive
-    ☐ history?
-    ☐ cards
+    ☐ remove global env
+    ✔ read cards from disk (short term) @done (14-10-05 19:28)
+    ✔ pass generated html from "getCard()" to client @done (14-10-05 19:28)
+    ✔ update card counts and buckets @done (14-10-05 19:28)
+    ☐ store history
+        ☐ some kind of json data file?
+    ✔ create cards on submit page @done (14-10-05 19:28)
+        ☐ check for duplicates
+    ☐ pull debug printing out into compile time files
+        ☐ package debug
+    ✔ Store all persistent data in one place @done (14-10-05 19:28)
+        ✔ git @done (14-10-05 19:29)

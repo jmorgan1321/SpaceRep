@@ -2,6 +2,7 @@ Web Client:
     ☐ make history page
     ☐ make UI prettier
     ☐ clean up navigation, header, footer
+    ☐ separate out scripts and html
 
 Server:
     ☐ remove global env
@@ -16,3 +17,4 @@ Server:
         ☐ package debug
     ✔ Store all persistent data in one place @done (14-10-05 19:28)
         ✔ git @done (14-10-05 19:29)
+    ☐ rename 'work' package to 'fact'

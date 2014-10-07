@@ -12,8 +12,10 @@ Server:
     Features:
         ☐ make a way to work with specific\all set(s) of facts (-set [<path from html>|all])
             ☐ default should be all
-            ☐ test with try.github.io fact sheet
+            ☐ git
+                 try.github.io
             ☐ windbg
+                http://msdn.microsoft.com/en-us/library/windows/hardware/hh406274(v=vs.85).aspx
         ✔ read cards from disk (short term) @done (14-10-05 19:28)
         ✔ pass generated html from "getCard()" to client @done (14-10-05 19:28)
         ✔ update card counts and buckets @done (14-10-05 19:28)

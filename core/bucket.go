@@ -1,7 +1,7 @@
 package core
 
 import (
-	"github.com/jmorgan1321/srs/utils"
+	"github.com/jmorgan1321/SpaceRep/utils"
 )
 
 // Bucket represents the frequency this card should be reviewed.

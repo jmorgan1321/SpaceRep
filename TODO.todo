@@ -8,6 +8,8 @@ Web Client:
 
 Server:
     Features:
+        ☐ make a way to work with a different set of facts (-set <path from html>)
+            ☐ test with try.github.io fact sheet
         ✔ read cards from disk (short term) @done (14-10-05 19:28)
         ✔ pass generated html from "getCard()" to client @done (14-10-05 19:28)
         ✔ update card counts and buckets @done (14-10-05 19:28)
@@ -35,3 +37,4 @@ Server:
 Facts:
     ☐ learn Minimal PPC Instr Set
         http://www.plantation-productions.com/Webster/www.writegreatcode.com/Vol2/wgc2_OB.pdf
+

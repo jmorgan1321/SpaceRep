@@ -1,7 +1,7 @@
 package env
 
 import (
-	"github.com/jmorgan1321/srs/core"
+	"github.com/jmorgan1321/SpaceRep/core"
 	"text/template"
 )
 

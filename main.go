@@ -4,9 +4,9 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/jmorgan1321/srs/core"
-	"github.com/jmorgan1321/srs/env"
-	"github.com/jmorgan1321/srs/sets/work"
+	"github.com/jmorgan1321/SpaceRep/core"
+	"github.com/jmorgan1321/SpaceRep/env"
+	"github.com/jmorgan1321/SpaceRep/sets/work"
 	"math/rand"
 	"net/http"
 	"os"
@@ -150,7 +150,7 @@ func main() {
 	readyCh := make(chan bool)
 
 	go func() {
-		dir := "C:/Users/jmorgan/Sandbox/golang/src/github.com/jmorgan1321/srs/html/"
+		dir := "C:/Users/jmorgan/Sandbox/golang/src/github.com/jmorgan1321/SpaceRep/html/"
 
 		http.HandleFunc("/api/submit", submitHandler)
 		http.HandleFunc("/api/save", saveHandler)

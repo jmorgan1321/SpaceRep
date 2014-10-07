@@ -31,7 +31,7 @@ func init() {
     <p>What does the {{.Comp}} <b>{{.Word}}</b> do?</p>
 </div>
 <div class="back">
-    <p><b>{{.Word}}</b> {{.Desc}}</p>
+    <p>{{.Desc}}</p>
     <img src="facts/image/{{.Image}}" height="150" width="150" />
     <p>({{.Hint}})</p>
 </div>`

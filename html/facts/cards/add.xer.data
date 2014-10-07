@@ -1,0 +1,7 @@
+{
+    "Word": "add.xer",
+    "Image": "exception.jpg",
+    "Desc": "(during some add instrs) sets OV and SO if signed overflow occurs; sets SO if SO was previously set; and leaves CA unaffected",
+    "Hint": "",
+    "Comp": 4
+}

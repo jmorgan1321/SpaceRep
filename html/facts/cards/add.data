@@ -1,7 +1,7 @@
 {
 	"Word": "add",
 	"Image": "add.jpg",
-	"Desc": "takes the val from r1 and r2 and",
-	"Hint": "new hint",
+	"Desc": "requires 3 instrs--rd, rs1, rs2--and computes the sum of the values in rs1 and rs2, storing the result in rd",
+	"Hint": "rd := rs1 + rs2; d, s1, s3 Ex [0...31]",
 	"Comp": 1
 }

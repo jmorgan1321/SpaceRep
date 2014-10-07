@@ -1,38 +1,86 @@
 [
 	{
-		"File": "bcctr",
+		"File": "add-dot",
 		"Type": 1,
-		"Count": 8,
+		"Count": 0,
 		"Bucket": 0
 	},
 	{
-		"File": "bcctr",
+		"File": "add-dot",
 		"Type": 2,
-		"Count": 8,
+		"Count": 0,
+		"Bucket": 0
+	},
+	{
+		"File": "add.cr0",
+		"Type": 1,
+		"Count": 0,
+		"Bucket": 0
+	},
+	{
+		"File": "add.cr0",
+		"Type": 2,
+		"Count": 0,
+		"Bucket": 0
+	},
+	{
+		"File": "add",
+		"Type": 1,
+		"Count": 0,
 		"Bucket": 0
 	},
 	{
 		"File": "add",
 		"Type": 2,
-		"Count": 8,
+		"Count": 0,
 		"Bucket": 0
 	},
 	{
-		"File": "addx",
+		"File": "add.xer",
 		"Type": 1,
-		"Count": 8,
+		"Count": 0,
 		"Bucket": 0
 	},
 	{
-		"File": "add",
-		"Type": 1,
-		"Count": 4,
-		"Bucket": 1
-	},
-	{
-		"File": "addx",
+		"File": "add.xer",
 		"Type": 2,
-		"Count": 4,
-		"Bucket": 1
+		"Count": 0,
+		"Bucket": 0
+	},
+	{
+		"File": "addo",
+		"Type": 1,
+		"Count": 0,
+		"Bucket": 0
+	},
+	{
+		"File": "addo",
+		"Type": 2,
+		"Count": 0,
+		"Bucket": 0
+	},
+	{
+		"File": "instr-dot",
+		"Type": 1,
+		"Count": 0,
+		"Bucket": 0
+	},
+	{
+		"File": "instr-dot",
+		"Type": 2,
+		"Count": 0,
+		"Bucket": 0
+	},
+	{
+		"File": "instr-o",
+		"Type": 1,
+		"Count": 0,
+		"Bucket": 0
+	},
+	{
+		"File": "instr-o",
+		"Type": 2,
+		"Count": 0,
+		"Bucket": 0
 	}
 ]

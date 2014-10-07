@@ -1,0 +1,7 @@
+{
+    "Word": "instr-o",
+    "Image": "exception.jpg",
+    "Desc": "signifies that 'instr' updates the OV and SO bits of XER",
+    "Hint": "",
+    "Comp": 1
+}

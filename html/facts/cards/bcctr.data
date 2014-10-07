@@ -1,7 +1,0 @@
-{
-	"Word": "bcctr",
-	"Image": "branch.jpg",
-	"Desc": "branches from the counter register and effects registers x, y, z",
-	"Hint": "Like that other one.",
-	"Comp": 1
-}

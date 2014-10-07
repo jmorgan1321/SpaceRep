@@ -5,6 +5,8 @@ Web Client:
         ☐ SpaceRep - Pump Up your Learning! logo
     ☐ clean up navigation, header, footer
     ☐ separate out scripts and html
+    ☐ remove hint parens, if no hint
+    ☐ make sure hint is never on card border
 
 Server:
     Features:
@@ -19,6 +21,7 @@ Server:
             ☐ package debug
         ✔ Store all persistent data in one place @done (14-10-05 19:28)
             ✔ git @done (14-10-05 19:29)
+        ☐ if there's no data, remove card from cards.info
 
     Refactor:
         ☐ rename 'work' package to 'fact'
@@ -30,7 +33,12 @@ Server:
                 ☐ card data path
             ☐ clean up handler code
         ☐ WRITE UNIT TESTS!!
+            ☐ make sure vallue of work.CodeComponent doesn't change (assert values)
         ☐ Error Handle
+        ☐ Main driver should take flag telling which card deck interface to load.
+            ☐ review, html should be loaded from interface
+            ☐ display, load card from interface
+            ☐ no deck-specific code in driver
 
 Facts:
     ☐ learn Minimal PPC Instr Set

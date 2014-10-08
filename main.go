@@ -3,64 +3,94 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"flag"
 	"fmt"
-	"github.com/jmorgan1321/srs/core"
-	"github.com/jmorgan1321/srs/env"
-	"github.com/jmorgan1321/srs/sets/work"
+	"github.com/jmorgan1321/SpaceRep/core"
+	"github.com/jmorgan1321/SpaceRep/env"
+	"github.com/jmorgan1321/SpaceRep/sets/work"
 	"math/rand"
 	"net/http"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
-	"text/template"
 	"time"
 )
 
 var g_env *env.Env
 var g_currentCard *core.Card
 
+var (
+	g_shouldOpenBrowser = flag.Bool("openBrowser", false, "tells spacedRep to open a browser window")
+	g_set               = flag.String("set", "facts", "which set to load: [set-name|all]")
+)
+
 func init() {
 	env.LoadCardsFunc = loadCards
 	env.DistributionFunc = core.StandardDistribution
 
 	g_env = env.New()
+}
 
-	cardHtmlTmpl1 := `
-<div class="front">
-    <p>What does the {{.Comp}} <b>{{.Word}}</b> do?</p>
-</div>
-<div class="back">
-    <p>{{.Desc}}</p>
-    <img src="facts/image/{{.Image}}" height="150" width="150" />
-    <p>({{.Hint}})</p>
-</div>`
-	tmpl1, _ := template.New("test").Parse(cardHtmlTmpl1)
-	g_env.TmplMap[core.WordCard.String()] = tmpl1
+func main() {
+	doneCh := make(chan bool)
+	readyCh := make(chan bool)
 
-	cardHtmlTmpl2 := `
-<div class="front">
-    <p>What {{.Comp}} {{.Desc}}?</p>
-</div>
-<div class="back">
-    <p><b>{{.Word}}</b></p>
-    <img src="facts/image/{{.Image}}" height="150" width="150" />
-    <p>({{.Hint}})</p>
-</div>`
-	tmpl2, _ := template.New("test").Parse(cardHtmlTmpl2)
-	g_env.TmplMap[core.DescCard.String()] = tmpl2
+	flag.Parse()
+
+	g_env.LoadTemplates(*g_set)
+
+	go func() {
+		dir := "C:/Users/jmorgan/Sandbox/golang/src/github.com/jmorgan1321/SpaceRep/html/"
+
+		http.HandleFunc("/api/submit", submitHandler)
+		http.HandleFunc("/api/save", saveHandler)
+		// TODO: clean this up.
+		http.HandleFunc("/api/review", func(fn http.HandlerFunc) http.HandlerFunc {
+			return func(w http.ResponseWriter, r *http.Request) {
+				// if origin := r.Header.Get("Origin"); origin != "" {
+				// 	w.Header().Set("Access-Control-Allow-Origin", origin)
+				// }
+				// w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+				// w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token")
+				// w.Header().Set("Access-Control-Allow-Credentials", "true")
+
+				fn(w, r)
+				readyCh <- true
+			}
+		}(reviewHandler))
+		http.Handle("/", http.FileServer(http.Dir(dir)))
+		http.ListenAndServe(":8080", nil)
+	}()
+
+	go func() {
+		fmt.Printf("[%d %d %d %d]\n",
+			len(g_env.Cards[core.Daily]), len(g_env.Cards[core.Weekly]),
+			len(g_env.Cards[core.Monthly]), len(g_env.Cards[core.Yearly]))
+		fmt.Println(g_env.Distributions)
+
+		ch := getCards(g_env)
+		for selection := range ch {
+			g_currentCard = selection.card
+			presentSelectionToUser(selection)
+			<-readyCh
+		}
+	}()
+
+	createCards()
+
+	<-time.After(1 * time.Second)
+	// TODO: make openBrowser flag
+	if *g_shouldOpenBrowser {
+		openBrowser("http://localhost:8080")
+	}
+
+	<-doneCh
 }
 
 type selection struct {
 	x    float32
 	card *core.Card
-}
-
-func handler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("handled")
-	w.Write([]byte("Hello root."))
-
-	// fmt.Fprintf(w, "Hi there, I love %s!", r.URL.Path[1:])
 }
 
 type Response map[string]interface{}
@@ -75,10 +105,17 @@ func (r Response) String() (s string) {
 	return
 }
 
+type tmplWrapper struct {
+	Set string
+	*work.Display
+}
+
 func reviewHandler(rw http.ResponseWriter, r *http.Request) {
 	// create new flashcard html
+	// TODO: handle *g_set=='all'
+	wrapper := tmplWrapper{Set: *g_set, Display: g_currentCard.Display.(*work.Display)}
 	var html bytes.Buffer
-	g_env.TmplMap[g_currentCard.Type.String()].Execute(&html, g_currentCard.Display.(*work.Display))
+	g_env.TmplMap[g_currentCard.Type.String()].Execute(&html, wrapper)
 
 	// decode web client's message
 	decoder := json.NewDecoder(r.Body)
@@ -124,7 +161,7 @@ func submitHandler(rw http.ResponseWriter, r *http.Request) {
 	decoder.Decode(&t)
 
 	// write out new card data
-	f, err := os.Create("html/facts/cards/" + t.Word + ".data")
+	f, err := os.Create("html/" + *g_set + "/cards/" + t.Word + ".data")
 	if err != nil {
 		panic(err)
 	}
@@ -143,56 +180,6 @@ func openBrowser(url string) {
 	if err != nil {
 		fmt.Printf("%v\n", url)
 	}
-}
-
-func main() {
-	doneCh := make(chan bool)
-	readyCh := make(chan bool)
-
-	go func() {
-		dir := "C:/Users/jmorgan/Sandbox/golang/src/github.com/jmorgan1321/srs/html/"
-
-		http.HandleFunc("/api/submit", submitHandler)
-		http.HandleFunc("/api/save", saveHandler)
-		// TODO: clean this up.
-		http.HandleFunc("/api/review", func(fn http.HandlerFunc) http.HandlerFunc {
-			return func(w http.ResponseWriter, r *http.Request) {
-				// if origin := r.Header.Get("Origin"); origin != "" {
-				// 	w.Header().Set("Access-Control-Allow-Origin", origin)
-				// }
-				// w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
-				// w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token")
-				// w.Header().Set("Access-Control-Allow-Credentials", "true")
-
-				fn(w, r)
-				readyCh <- true
-			}
-		}(reviewHandler))
-		http.Handle("/", http.FileServer(http.Dir(dir)))
-		http.ListenAndServe(":8080", nil)
-	}()
-
-	go func() {
-		fmt.Printf("[%d %d %d %d]\n",
-			len(g_env.Cards[core.Daily]), len(g_env.Cards[core.Weekly]),
-			len(g_env.Cards[core.Monthly]), len(g_env.Cards[core.Yearly]))
-		fmt.Println(g_env.Distributions)
-
-		ch := getCards(g_env)
-		for selection := range ch {
-			g_currentCard = selection.card
-			presentSelectionToUser(selection)
-			<-readyCh
-		}
-	}()
-
-	createCards()
-
-	<-time.After(1 * time.Second)
-	// TODO: make openBrowser flag
-	// openBrowser("http://localhost:8080")
-
-	<-doneCh
 }
 
 func getCards(env *env.Env) <-chan selection {
@@ -292,7 +279,7 @@ func saveDeck(deck [core.BucketCount][]*core.Card) {
 		fmt.Println(err)
 	}
 
-	path := "html/facts/cards/cards.info"
+	path := "html/" + *g_set + "/cards/cards.info"
 	f, err := os.Create(path)
 	if err != nil {
 		panic("file read error with: " + path)
@@ -304,14 +291,14 @@ func saveDeck(deck [core.BucketCount][]*core.Card) {
 
 func createCards() {
 	// read in all .data files
-	alldata := ReadCardDataFromDisk("html/facts/cards")
+	alldata := ReadCardDataFromDisk("html/" + *g_set + "/cards")
 	fmt.Println("\ndata:")
 	for _, v := range alldata {
 		fmt.Printf("\t%#v\n", v)
 	}
 
 	// read in .card files (to hash, compare against), only create new cards
-	allinfo := ReadCardInfoFromDisk("html/facts/cards/cards.info")
+	allinfo := ReadCardInfoFromDisk("html/" + *g_set + "/cards/cards.info")
 	fmt.Println("\ninfo:")
 	for _, v := range allinfo {
 		fmt.Printf("\t%#v\n", v)
@@ -344,7 +331,7 @@ func createCards() {
 		fmt.Println(err)
 	}
 
-	path := "html/facts/cards/cards.info"
+	path := "html/" + *g_set + "/cards/cards.info"
 	f, err := os.Create(path)
 	if err != nil {
 		panic("file read error with: " + path)
@@ -355,13 +342,13 @@ func createCards() {
 }
 
 func loadCards() [core.BucketCount][]*core.Card {
-	alldata := ReadCardDataFromDisk("html/facts/cards")
+	alldata := ReadCardDataFromDisk("html/" + *g_set + "/cards")
 	dataMap := map[string]core.Display{}
 	for _, d := range alldata {
 		dataMap[d.(*work.Display).Word] = d
 	}
 
-	allinfo := ReadCardInfoFromDisk("html/facts/cards/cards.info")
+	allinfo := ReadCardInfoFromDisk("html/" + *g_set + "/cards/cards.info")
 
 	// create and return cards and card buckets
 	deck := [core.BucketCount][]*core.Card{}

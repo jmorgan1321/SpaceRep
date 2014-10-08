@@ -1,9 +1,12 @@
 package core
 
 import (
-	"github.com/jmorgan1321/srs/utils"
+	"github.com/jmorgan1321/SpaceRep/utils"
 )
 
+// TODO: This should either be an interface or in the facts lib.  Core shouldn't
+// 		 know about concrete types, because then it's harder to make core
+//       extensible.
 type Type int
 
 func (t Type) String() string {

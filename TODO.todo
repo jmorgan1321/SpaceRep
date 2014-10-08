@@ -11,11 +11,16 @@ Web Client:
 Server:
     Features:
         ☐ make a way to work with specific\all set(s) of facts (-set [<path from html>|all])
+            ✔ specific set support @done (14-10-07 16:22)
+            ☐ Load templates from html/<set>/<files...>.tmpl
+                - allow user to create their own templates, don't need to recompile
+                - impl idea: load in tmpls, make an array of tmpl names, store tmpl name in card when creating them from .data file.
             ☐ default should be all
             ☐ git
                  try.github.io
             ☐ windbg
                 http://msdn.microsoft.com/en-us/library/windows/hardware/hh406274(v=vs.85).aspx
+            ☐ kahlee :)
         ✔ read cards from disk (short term) @done (14-10-05 19:28)
         ✔ pass generated html from "getCard()" to client @done (14-10-05 19:28)
         ✔ update card counts and buckets @done (14-10-05 19:28)
@@ -30,6 +35,7 @@ Server:
 
     Refactor:
         ☐ rename 'work' package to 'fact'
+        ☐ store flag values in env
         ☐ cleanup main
             ☐ pullout templates into package 'fact'
             ☐ remove global env
@@ -39,6 +45,7 @@ Server:
             ☐ clean up handler code
         ☐ WRITE UNIT TESTS!!
         ☐ Error Handle
+        ☐ clean TODOs
 
 Facts:
     ☐ learn Minimal PPC Instr Set

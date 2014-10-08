@@ -1,0 +1,17 @@
+{
+    "Word": "gorgeous",
+    "Image": "kahlee_favorite.jpg",
+    "Desc": "takes the val from r1 and r2 and",
+    "Hint": "new hint",
+    "Comp": 1 // Jeff's favorite things
+}
+
+
+<!--
+Front:
+Which one of {{.Comp=Jeff's Favorite Things}} {{.Desc=has beautiful green eyes}}?
+{{.Hint=she's one of a kind}}
+Back:
+    {{.Word=Kahlee}}
+    {{.Image=Kahlee_favorite.jpg}}
+-->

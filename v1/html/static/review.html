@@ -1,0 +1,140 @@
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="css/mystyle.css">
+    </head>
+</html>
+
+<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('.flashcard').on('click', function() {
+            $('.flashcard').toggleClass('flipped');
+        });
+
+        $('#AcceptBtn').on('click', function() {
+            var data = {
+                Status: "Accept",
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/api/review",
+                data: JSON.stringify(data),
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+            })
+            .done(function(data, textStatus, xhr) {
+                console.log("done");
+                console.log("textStatus: " + textStatus);
+                console.dir(data);
+                console.dir(xhr);
+
+                $('.flashcard').toggleClass('flipped', false);
+                $('#flashcardDiv').html(data.newCard);
+            });
+        });
+
+        $('#ForgotBtn').on('click', function() {
+            var data = {
+                Status: "Forgot",
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/api/review",
+                data: JSON.stringify(data),
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+            })
+            .always(function(a, textStatus, b) {
+                console.log("finished");
+                console.log("textStatus: " + textStatus);
+                console.dir(a);
+                console.dir(b);
+
+                $('.flashcard').toggleClass('flipped', false);
+                $('#flashcardDiv').html(data.newCard);
+            });
+        });
+
+        $('#SaveBtn').on('click', function() {
+            var data = {
+                Status: "Save",
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/api/save",
+                data: JSON.stringify(data),
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+            })
+            .always(function(a, textStatus, b) {
+                console.log("finished");
+                console.log("textStatus: " + textStatus);
+                console.dir(a);
+                console.dir(b);
+            });
+
+            alert("Saved Session Data")
+        });
+
+
+    });
+</script>
+
+<body>
+    <!-- header -->
+    <nav>
+      <a href="new_card.html">New Card</a>
+      <a href="review.html">Review</a>
+    </nav>
+
+
+    <!--
+    - What does this do?
+        Word: bcctr
+        Img : tree.jpg
+        Desc: branches from the counter register...
+        Hint: like that other one
+        Comp: ppc_instr
+
+        F: "what does the ppc instr's bcctr do?", image
+        B: bbctr, ppc instr, branches from the counter..., hint
+
+    - What does this?
+        Word: keInitMemMgr
+        Img : some_image.jpg
+        Desc: get used by the guest kernel, unknowingly, when...
+        Hint: 8GB reserved
+        Comp: emu_comp
+
+        F: What emulator component get used by the guest kernel...
+        B: keInitMemMgr, emulator, Image, hint
+    -->
+
+    <div class="stage">
+        <div class="flashcard" id="flashcardDiv">
+            <div class="front">
+                <p>SpaceRep</p>
+                <img src="facts/image/branch.jpg" height="150" width="150" />
+                <br />
+                (Click to flip and see instructions.)
+            </div>
+            <div class="back">
+                <p><b>Pump up your learning!</b></p>
+                <p>'Accept' and 'Forgot' to get the next card.</p>
+                <p>'Save Session' to save statistics for next time.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="rows">
+        <div class="row2">
+            <button type="button" id="AcceptBtn">Accept</button>
+            <button type="button" id="ForgotBtn">Forgot</button>
+            <button type="button" id="SaveBtn">Save Session</button>
+        </div>
+    </div>
+
+</body>

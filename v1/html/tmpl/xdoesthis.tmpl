@@ -1,0 +1,9 @@
+{{define "front"}}
+    <p>What does the {{.Comp}} <b>{{.Word}}</b> do?</p>
+{{end}}
+
+{{define "back"}}
+    <p><b>{{.Word}}</b> {{.Desc}}</p>
+    <img src="{{.Set}}/image/{{.Image}}" height="150" width="150" />
+    <p>({{.Hint}})</p>
+{{end}}

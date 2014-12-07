@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/jmorgan1321/SpaceRep/sets/work"
+	"github.com/jmorgan1321/SpaceRep/v1/displays/basic"
 	"github.com/jmorgan1321/SpaceRep/v1/internal/core"
 	"github.com/jmorgan1321/SpaceRep/v1/internal/test"
 )
@@ -20,16 +20,16 @@ func dir(s string) Option {
 func testDFE(s string) core.Display {
 	switch s {
 	case "ppc", "git":
-		return &work.Display{}
+		return &basic.Display{}
 	}
 	return nil
 }
 
 func checkCard(t *testing.T, i int, exp, act *core.Card) {
 	// check card display
-	e := exp.Display.(*work.Display)
-	a, ok := act.Display.(*work.Display)
-	test.Assert(t, ok, "card %v: expected (*work.Display), got %v:", i, a)
+	e, ok := exp.Display.(*basic.Display)
+	a, ok := act.Display.(*basic.Display)
+	test.Assert(t, ok, "card %v: expected (*basic.Display), got %v:", i, a)
 
 	test.ExpectEQ(t, e.Word, a.Word, "card %d: Word match", i)
 	test.ExpectEQ(t, e.Desc, a.Desc, "card %d: Desc match", i)
@@ -88,35 +88,35 @@ func TestLoadDeck_All(t *testing.T) {
 
 	testdata := []*core.Card{
 		&core.Card{
-			Display: &work.Display{Word: "push", Image: "push.jpg", Desc: "push desc", Hint: "push hint", Comp: 1},
+			Display: &basic.Display{Word: "push", Image: "push.jpg", Desc: "push desc", Hint: "push hint", Comp: 1},
 			Info:    core.Info{Set: "git", File: "push", Type: 1, Count: 2, Bucket: 0},
 		},
 		&core.Card{
-			Display: &work.Display{Word: "add.", Image: "add.jpg", Desc: "add. desc", Hint: "add. hint", Comp: 1},
+			Display: &basic.Display{Word: "add.", Image: "add.jpg", Desc: "add. desc", Hint: "add. hint", Comp: 1},
 			Info:    core.Info{Set: "ppc", File: "add.", Type: 1, Count: 7, Bucket: 0},
 		},
 		&core.Card{
-			Display: &work.Display{Word: "push", Image: "push.jpg", Desc: "push desc", Hint: "push hint", Comp: 1},
+			Display: &basic.Display{Word: "push", Image: "push.jpg", Desc: "push desc", Hint: "push hint", Comp: 1},
 			Info:    core.Info{Set: "git", File: "push", Type: 2, Count: 1, Bucket: 1},
 		},
 		&core.Card{
-			Display: &work.Display{Word: "add.", Image: "add.jpg", Desc: "add. desc", Hint: "add. hint", Comp: 1},
+			Display: &basic.Display{Word: "add.", Image: "add.jpg", Desc: "add. desc", Hint: "add. hint", Comp: 1},
 			Info:    core.Info{Set: "ppc", File: "add.", Type: 2, Count: 3, Bucket: 1},
 		},
 		&core.Card{
-			Display: &work.Display{Word: "commit", Image: "commit.jpg", Desc: "commit desc", Hint: "commit hint", Comp: 1},
+			Display: &basic.Display{Word: "commit", Image: "commit.jpg", Desc: "commit desc", Hint: "commit hint", Comp: 1},
 			Info:    core.Info{Set: "git", File: "commit", Type: 1, Count: 0, Bucket: 2},
 		},
 		&core.Card{
-			Display: &work.Display{Word: "branch", Image: "branch.jpg", Desc: "branch desc", Hint: "branch hint", Comp: 1},
+			Display: &basic.Display{Word: "branch", Image: "branch.jpg", Desc: "branch desc", Hint: "branch hint", Comp: 1},
 			Info:    core.Info{Set: "ppc", File: "branch", Type: 1, Count: 1, Bucket: 2},
 		},
 		&core.Card{
-			Display: &work.Display{Word: "commit", Image: "commit.jpg", Desc: "commit desc", Hint: "commit hint", Comp: 1},
+			Display: &basic.Display{Word: "commit", Image: "commit.jpg", Desc: "commit desc", Hint: "commit hint", Comp: 1},
 			Info:    core.Info{Set: "git", File: "commit", Type: 2, Count: 0, Bucket: 3},
 		},
 		&core.Card{
-			Display: &work.Display{Word: "branch", Image: "branch.jpg", Desc: "branch desc", Hint: "branch hint", Comp: 1},
+			Display: &basic.Display{Word: "branch", Image: "branch.jpg", Desc: "branch desc", Hint: "branch hint", Comp: 1},
 			Info:    core.Info{Set: "ppc", File: "branch", Type: 2, Count: 0, Bucket: 3},
 		},
 	}
@@ -145,19 +145,19 @@ func TestLoadDeck_Specific(t *testing.T) {
 
 	testdata := []*core.Card{
 		&core.Card{
-			Display: &work.Display{Word: "add.", Image: "add.jpg", Desc: "add. desc", Hint: "add. hint", Comp: 1},
+			Display: &basic.Display{Word: "add.", Image: "add.jpg", Desc: "add. desc", Hint: "add. hint", Comp: 1},
 			Info:    core.Info{Set: "ppc", File: "add.", Type: 1, Count: 7, Bucket: 0},
 		},
 		&core.Card{
-			Display: &work.Display{Word: "add.", Image: "add.jpg", Desc: "add. desc", Hint: "add. hint", Comp: 1},
+			Display: &basic.Display{Word: "add.", Image: "add.jpg", Desc: "add. desc", Hint: "add. hint", Comp: 1},
 			Info:    core.Info{Set: "ppc", File: "add.", Type: 2, Count: 3, Bucket: 1},
 		},
 		&core.Card{
-			Display: &work.Display{Word: "branch", Image: "branch.jpg", Desc: "branch desc", Hint: "branch hint", Comp: 1},
+			Display: &basic.Display{Word: "branch", Image: "branch.jpg", Desc: "branch desc", Hint: "branch hint", Comp: 1},
 			Info:    core.Info{Set: "ppc", File: "branch", Type: 1, Count: 1, Bucket: 2},
 		},
 		&core.Card{
-			Display: &work.Display{Word: "branch", Image: "branch.jpg", Desc: "branch desc", Hint: "branch hint", Comp: 1},
+			Display: &basic.Display{Word: "branch", Image: "branch.jpg", Desc: "branch desc", Hint: "branch hint", Comp: 1},
 			Info:    core.Info{Set: "ppc", File: "branch", Type: 2, Count: 0, Bucket: 3},
 		},
 	}
@@ -228,10 +228,6 @@ func Test_getDisplayErrorsOnUnknownType(t *testing.T) {
 }
 
 func TestDisplaysAreCreatedWithType(t *testing.T) {
-	// I want display to have type method, so Display must be
-	// created with a type (from Info) and store/manipulate it
-	// for later use.
-	//
 	deck := New(dir(testdir.name), Deck("ppc"), DFE(testDFE))
 	d, err := deck.getDisplay("ppc")
 	test.Assert(t, err == nil, "unexpected error: %v", err)

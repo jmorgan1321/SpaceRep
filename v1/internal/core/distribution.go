@@ -1,6 +1,6 @@
 package core
 
-func StandardDistribution(deck Deck, sessionLength float32) [BucketCount]float32 {
+func StandardDistribution(deck *Deck, sessionLength float32) [BucketCount]float32 {
 	ret := [BucketCount]float32{}
 
 	d := [BucketCount]int{

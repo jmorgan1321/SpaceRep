@@ -16,12 +16,6 @@ const (
 )
 
 var routes = []Route{
-	// Route{
-	// 	Name:    "Index",
-	// 	Method:  "GET",
-	// 	Pattern: "/",
-	// 	Handler: http.FileServer(http.Dir(`C:\Users\jmorgan\Sandbox\golang\src\github.com\jmorgan1321\SpaceRep\v1\html\static`)),
-	// },
 	Route{
 		Name:    "CardIndex",
 		Method:  "GET",
@@ -30,13 +24,15 @@ var routes = []Route{
 	},
 	Route{
 		Name:    "Review",
-		Method:  "GET",
+		Method:  "POST",
 		Pattern: apiPrefix + "/review/{value}",
+		// TODO: restrict path
+		// Pattern: apiPrefix + "/review/{value:^(accept|forgot)$}",
 		Handler: reviewHandler,
 	},
 	Route{
 		Name:    "Save",
-		Method:  "GET",
+		Method:  "POST",
 		Pattern: apiPrefix + "/save",
 		Handler: saveHandler,
 	},

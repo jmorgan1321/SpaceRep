@@ -1,0 +1,38 @@
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="css/mystyle.css">
+    </head>
+</html>
+
+<!-- TODO: switch back to web jquery when using internet -->
+<script src="deps/jquery-1.9.1.min.js"></script>
+<!-- <script src="http://code.jquery.com/jquery-latest.min.js"></script> -->
+<script src="js/handlers.js"></script>
+
+<body>
+
+    <div class="stage">
+        <div class="flashcard" id="flashcardDiv">
+            <div class="front">
+                <p>SpaceRep</p>
+                <img src="/decks/ppc/image/branch.jpg" height="150" width="150" />
+                <br />
+                (Click to flip and see  instructions.)
+            </div>
+            <div class="back">
+                <p><b>Pump up your learning!</b></p>
+                <p>'Accept' and 'Forgot' to get the next card.</p>
+                <p>'Save Session' to save statistics for next time.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="rows">
+        <div class="row2">
+            <button type="button" id="AcceptBtn">Accept</button>
+            <button type="button" id="ForgotBtn">Forgot</button>
+            <button type="button" id="SaveBtn">Save Session</button>
+        </div>
+    </div>
+
+</body>

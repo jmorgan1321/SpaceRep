@@ -86,7 +86,7 @@ func (b *Builder) getDisplay(s string) (core.Display, error) {
 	return d, nil
 }
 
-func (b *Builder) LoadDeck() (core.Deck, error) {
+func (b *Builder) LoadDeck() (*core.Deck, error) {
 	decks := b.getDecks()
 
 	b.loadTemplates(decks)
@@ -113,7 +113,7 @@ func (b *Builder) LoadDeck() (core.Deck, error) {
 	}
 
 	// create and return cards and card buckets
-	deck := &[core.BucketCount][]*core.Card{}
+	deck := &core.Deck{}
 	for _, c := range allinfo {
 		if c.Count >= c.Bucket.GetMaxCount() {
 			c.Count = 0

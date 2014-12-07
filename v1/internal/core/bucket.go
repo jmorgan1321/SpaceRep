@@ -1,8 +1,6 @@
 package core
 
-import (
-	"github.com/jmorgan1321/SpaceRep/utils"
-)
+import "github.com/jmorgan1321/SpaceRep/v1/internal/utils"
 
 // Bucket represents the frequency a card should be reviewed.
 type Bucket int

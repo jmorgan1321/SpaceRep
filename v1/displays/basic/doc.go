@@ -1,5 +1,5 @@
 /*
-package basic is used to represent simple flashcard information.
+A basic display is used to represent simple flashcard information.
 
 Card Types
     - Code Components - generate the following:

@@ -7,10 +7,8 @@ import (
 	"text/template"
 	"time"
 
-	"github.com/jmorgan1321/SpaceRep/utils"
+	"github.com/jmorgan1321/SpaceRep/v1/internal/utils"
 )
-
-type Deck *[BucketCount][]*Card
 
 type TmplMap map[string]*template.Template
 
@@ -41,7 +39,8 @@ type Display interface {
 }
 
 type Info struct {
-	File, Set string
+	File string
+	Set  string `json:"-"`
 	// Type is interpreted by Displays to mean different things
 	Type int
 	// Count stores how many times the user got the correct result on this card.
@@ -50,9 +49,9 @@ type Info struct {
 	// move this card into the next highest bucket.  A count below zero causes
 	// this card to be moved into a lower bucket.
 	//
-	Count             int
-	Bucket            Bucket
-	Created, LastSeen time.Time
+	Count               int
+	Bucket              Bucket
+	FirstSeen, LastSeen time.Time
 }
 
 type Card struct {

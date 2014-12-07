@@ -8,6 +8,8 @@ import (
 	"strings"
 )
 
+// TODO: defer debug.Trace().Untrace()  one liner
+
 func Trace() {
 	IndentationLevel.Increment()
 

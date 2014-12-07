@@ -1,276 +1,124 @@
 package main
 
 import (
-	"bytes"
 	"encoding/json"
 	"flag"
 	"fmt"
-	"github.com/jmorgan1321/SpaceRep/core"
-	"github.com/jmorgan1321/SpaceRep/env"
-	"github.com/jmorgan1321/SpaceRep/sets/work"
-	"math/rand"
+	"log"
 	"net/http"
 	"os"
-	"os/exec"
 	"path/filepath"
-	"strings"
-	"time"
+
+	"github.com/jmorgan1321/SpaceRep/v1/internal/builder"
+	"github.com/jmorgan1321/SpaceRep/v1/internal/core"
+	"github.com/jmorgan1321/SpaceRep/v1/internal/env"
 )
 
-var g_env *env.Env
-var g_currentCard *core.Card
+var (
+	set     = flag.String("deck", "all", "which deck(s) to load cards from")
+	browser = flag.Bool("browser", false, "attempt to open a browser")
+	port    = flag.String("port", ":8080", "which port to run card server on")
+)
 
 var (
-	g_shouldOpenBrowser = flag.Bool("openBrowser", false, "tells spacedRep to open a browser window")
-	g_set               = flag.String("set", "facts", "which set to load: [set-name|all]")
+	g_env      *env.Env
+	g_currCard *core.Card
+	nextCardCh chan struct{}
 )
 
 func init() {
-	env.LoadCardsFunc = loadCards
-	env.DistributionFunc = core.StandardDistribution
-
-	g_env = env.New()
+	flag.Usage = usage
 }
 
 func main() {
-	doneCh := make(chan bool)
-	readyCh := make(chan bool)
+	doneCh := make(chan struct{})
+	nextCardCh = make(chan struct{})
 
 	flag.Parse()
 
-	g_env.LoadTemplates(*g_set)
+	deck, err := builder.New(
+		builder.DFE(dfe),
+		builder.Deck(*set),
+	).LoadDeck()
 
+	if err != nil {
+		log.Fatal("failed to load deck: ", err)
+	}
+
+	g_env = env.New(
+		env.Deck(deck),
+		env.DistributionFunc(core.StandardDistribution),
+	)
+
+	// spin up server thread
 	go func() {
-		dir := "C:/Users/jmorgan/Sandbox/golang/src/github.com/jmorgan1321/SpaceRep/html/"
-
-		http.HandleFunc("/api/submit", submitHandler)
-		http.HandleFunc("/api/save", saveHandler)
-		// TODO: clean this up.
-		http.HandleFunc("/api/review", func(fn http.HandlerFunc) http.HandlerFunc {
-			return func(w http.ResponseWriter, r *http.Request) {
-				// if origin := r.Header.Get("Origin"); origin != "" {
-				// 	w.Header().Set("Access-Control-Allow-Origin", origin)
-				// }
-				// w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
-				// w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token")
-				// w.Header().Set("Access-Control-Allow-Credentials", "true")
-
-				fn(w, r)
-				readyCh <- true
-			}
-		}(reviewHandler))
-		http.Handle("/", http.FileServer(http.Dir(dir)))
-		http.ListenAndServe(":8080", nil)
+		router := NewRouter()
+		router.PathPrefix("/").Handler(http.FileServer(http.Dir("./html")))
+		log.Fatal(http.ListenAndServe(*port, router))
 	}()
 
+	// spin up presentation thread
 	go func() {
-		fmt.Printf("[%d %d %d %d]\n",
-			len(g_env.Cards[core.Daily]), len(g_env.Cards[core.Weekly]),
-			len(g_env.Cards[core.Monthly]), len(g_env.Cards[core.Yearly]))
-		fmt.Println(g_env.Distributions)
-
-		ch := getCards(g_env)
-		for selection := range ch {
-			g_currentCard = selection.card
-			presentSelectionToUser(selection)
-			<-readyCh
+		for card := range g_env.Deck.GetCards(g_env.Seed, g_env.Distributions) {
+			g_currCard = card
+			<-nextCardCh
 		}
 	}()
 
-	createCards()
-
-	<-time.After(1 * time.Second)
-	// TODO: make openBrowser flag
-	if *g_shouldOpenBrowser {
-		openBrowser("http://localhost:8080")
+	if *browser {
+		openBrowser("http://localhost" + *port)
+	} else {
+		fmt.Println("open browser to http://localhost" + *port)
 	}
 
 	<-doneCh
 }
 
-type selection struct {
-	x    float32
-	card *core.Card
+func usage() {
+	msg := `
+    Desc:
+    %s is a spaced repetition system (srs) designed to optimize
+    learning and retention by presenting flashcards at specific
+    intervals!
+
+    The frequency a flashcard is shown depends on how
+    many times the cards was remembered or forgotten and how long
+    it's been since the card was last seen.
+
+
+    Usage:    %s [options]
+
+    The options are listed below in the following format:
+
+        -option=default value:  description
+
+    Options:
+`
+	prog := filepath.Base(os.Args[0])
+	fmt.Printf(msg+"\n", prog, prog)
+	flag.PrintDefaults()
 }
 
-type Response map[string]interface{}
-
-func (r Response) String() (s string) {
-	b, err := json.Marshal(r)
-	if err != nil {
-		s = ""
-		return
-	}
-	s = string(b)
-	return
-}
-
-type tmplWrapper struct {
-	Set string
-	*work.Display
-}
-
-func reviewHandler(rw http.ResponseWriter, r *http.Request) {
-	// create new flashcard html
-	// TODO: handle *g_set=='all'
-	wrapper := tmplWrapper{Set: *g_set, Display: g_currentCard.Display.(*work.Display)}
-	var html bytes.Buffer
-	g_env.TmplMap[g_currentCard.Type.String()].Execute(&html, wrapper)
-
-	// decode web client's message
-	decoder := json.NewDecoder(r.Body)
-	var t struct{ Status string }
-	decoder.Decode(&t)
-	fmt.Printf("1: %#v\n", t)
-
-	// update card count based on user response
-	fmt.Println(t.Status)
-	switch t.Status {
-	case "Accept":
-		g_currentCard.IncCount()
-	case "Forgot":
-		g_currentCard.DecCount()
-	}
-
-	// send next card's html back to webpage
-	rw.Header().Set("Content-Type", "application/json")
-	fmt.Fprint(rw, Response{
-		"success": true,
-		"message": "Hello!",
-		"newCard": html.String(),
-	})
-}
-
-func saveHandler(rw http.ResponseWriter, r *http.Request) {
-	rw.Header().Set("Content-Type", "application/json")
-	fmt.Fprint(rw, Response{
-		"success": true,
-		"message": "Hello!",
-	})
-
-	saveDeck(g_env.Cards)
-}
-
-func submitHandler(rw http.ResponseWriter, r *http.Request) {
-	rw.Header().Set("Content-Type", "application/json")
-	fmt.Fprint(rw, Response{"success": true, "message": "Hello!"})
-
-	decoder := json.NewDecoder(r.Body)
-
-	var t work.Display
-	decoder.Decode(&t)
-
-	// write out new card data
-	f, err := os.Create("html/" + *g_set + "/cards/" + t.Word + ".data")
-	if err != nil {
-		panic(err)
-	}
-	defer f.Close()
-
-	b, err := json.MarshalIndent(t, "", "\t")
-	if err != nil {
-		panic(err)
-	}
-	f.Write(b)
-}
-
-func openBrowser(url string) {
-	cmd := exec.Command("cmd", "/c", "start", url)
-	err := cmd.Run()
-	if err != nil {
-		fmt.Printf("%v\n", url)
-	}
-}
-
-func getCards(env *env.Env) <-chan selection {
-	r := rand.New(rand.NewSource(42))
-	ch := make(chan selection)
-
-	go func() {
-		for {
-			// get random distribution selection between [0...1]
-			x := r.Float32()
-
-			bucket := core.Daily
-			switch {
-			case x < env.Distributions[core.Yearly]:
-				bucket = core.Yearly
-			case x < env.Distributions[core.Monthly]:
-				bucket = core.Monthly
-			case x < env.Distributions[core.Weekly]:
-				bucket = core.Weekly
-			}
-
-			// pick random card from bucket
-			// TODO: handle empty bucket case:
-			if len(env.Cards[bucket]) == 0 {
-				continue
-			}
-			i := r.Intn(len(env.Cards[bucket]))
-			ch <- selection{x: x, card: env.Cards[bucket][i]}
-		}
-	}()
-
-	return ch
-}
-
-func presentSelectionToUser(s selection) {
-	fmt.Printf("%.2f - %7s - %10s - %2d\n", s.x, s.card.Bucket, s.card.Display.(*work.Display).Word, s.card.Count)
-}
-
-// TODO: promote to core?  Do all decks load cards the same way
-func ReadCardDataFromDisk(path string) []core.Display {
-	alldata := []core.Display{}
-
-	filepath.Walk(path, func(path string, fi os.FileInfo, err error) error {
-		shouldScan := strings.HasSuffix(path, ".data") && !fi.IsDir()
-		if !shouldScan {
-			return nil
-		}
-
-		file, err := os.Open(path)
-		if err != nil {
-			panic("file read error with: " + path)
-		}
-		defer file.Close()
-
-		decoder := json.NewDecoder(file)
-
-		var d work.Display
-		decoder.Decode(&d)
-
-		alldata = append(alldata, &d)
-		return nil
-	})
-
-	return alldata
-}
-
-func ReadCardInfoFromDisk(path string) []*core.Info {
-	allinfo := []*core.Info{}
-
-	f, err := os.Open(path)
-	if err != nil {
-		panic("file read error with: " + path)
-	}
-	defer f.Close()
-
-	decoder := json.NewDecoder(f)
-	err = decoder.Decode(&allinfo)
-	if err != nil {
-		fmt.Println("err:", err)
-	}
-
-	return allinfo
-}
-
-func saveDeck(deck [core.BucketCount][]*core.Card) {
-	allinfo := []*core.Info{}
-
+// TODO: move or make a member of Deck?
+func saveDeck(deck *core.Deck) {
+	sets := map[string][]*core.Card{}
 	for _, bucket := range deck {
 		for _, card := range bucket {
-			allinfo = append(allinfo, &card.Info)
+			sets[card.Set] = append(sets[card.Set], card)
 		}
+	}
+
+	for set, cards := range sets {
+		fmt.Println("saving deck:", set)
+		saveCards(cards)
+	}
+}
+
+func saveCards(cards []*core.Card) {
+	allinfo := []*core.Info{}
+
+	for _, card := range cards {
+		allinfo = append(allinfo, &card.Info)
 	}
 
 	// rewrite .cards file
@@ -279,7 +127,7 @@ func saveDeck(deck [core.BucketCount][]*core.Card) {
 		fmt.Println(err)
 	}
 
-	path := "html/" + *g_set + "/cards/cards.info"
+	path := "html/decks/" + cards[0].Set + "/cards/cards.info"
 	f, err := os.Create(path)
 	if err != nil {
 		panic("file read error with: " + path)
@@ -287,82 +135,4 @@ func saveDeck(deck [core.BucketCount][]*core.Card) {
 	defer f.Close()
 
 	f.Write(b)
-}
-
-func createCards() {
-	// read in all .data files
-	alldata := ReadCardDataFromDisk("html/" + *g_set + "/cards")
-	fmt.Println("\ndata:")
-	for _, v := range alldata {
-		fmt.Printf("\t%#v\n", v)
-	}
-
-	// read in .card files (to hash, compare against), only create new cards
-	allinfo := ReadCardInfoFromDisk("html/" + *g_set + "/cards/cards.info")
-	fmt.Println("\ninfo:")
-	for _, v := range allinfo {
-		fmt.Printf("\t%#v\n", v)
-	}
-
-	// TODO: make ReadCardInfoFromDisk return [core.numcardtypes]map[string]*core.Info{}
-	infoMap := map[string]map[string]*core.Info{
-		core.WordCard.String(): map[string]*core.Info{},
-		core.DescCard.String(): map[string]*core.Info{},
-	}
-	for _, info := range allinfo {
-		infoMap[info.Type.String()][info.File] = info
-	}
-
-	// for each item in alldata, if it doesn't exist in allinfo--create it
-	// for all data create .cards
-	for _, d := range alldata {
-		dd := d.(*work.Display)
-		if _, found := infoMap[core.DescCard.String()][dd.Word]; !found {
-			allinfo = append(allinfo, &core.Info{File: dd.Word, Type: core.DescCard})
-		}
-		if _, found := infoMap[core.WordCard.String()][dd.Word]; !found {
-			allinfo = append(allinfo, &core.Info{File: dd.Word, Type: core.WordCard})
-		}
-	}
-
-	// rewrite .cards file
-	b, err := json.MarshalIndent(allinfo, "", "\t")
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	path := "html/" + *g_set + "/cards/cards.info"
-	f, err := os.Create(path)
-	if err != nil {
-		panic("file read error with: " + path)
-	}
-	defer f.Close()
-
-	f.Write(b)
-}
-
-func loadCards() [core.BucketCount][]*core.Card {
-	alldata := ReadCardDataFromDisk("html/" + *g_set + "/cards")
-	dataMap := map[string]core.Display{}
-	for _, d := range alldata {
-		dataMap[d.(*work.Display).Word] = d
-	}
-
-	allinfo := ReadCardInfoFromDisk("html/" + *g_set + "/cards/cards.info")
-
-	// create and return cards and card buckets
-	deck := [core.BucketCount][]*core.Card{}
-	for _, c := range allinfo {
-		if c.Count >= c.Bucket.GetMaxCount() {
-			c.Count = 0
-			c.Bucket = c.Bucket.NextBucket()
-		}
-		if c.Count < 0 {
-			c.Count = 0
-			c.Bucket = c.Bucket.PrevBucket()
-		}
-		deck[c.Bucket] = append(deck[c.Bucket], &core.Card{Info: *c, Display: dataMap[c.File]})
-	}
-
-	return deck
 }

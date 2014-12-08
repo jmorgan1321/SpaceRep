@@ -20,7 +20,8 @@ var (
 )
 
 var (
-	g_env      *env.Env
+	g_env *env.Env
+	// TODO: examine if we can get rid of nextCardCh and make g_currCard a channel
 	g_currCard *core.Card
 	nextCardCh chan struct{}
 )
@@ -36,7 +37,6 @@ func main() {
 	flag.Parse()
 
 	deck, err := builder.New(
-		// builder.DFE(factory.DFE),
 		builder.Deck(*set),
 	).LoadDeck()
 

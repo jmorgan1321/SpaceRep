@@ -280,6 +280,9 @@ func makeCards(set string, info []*core.Info, data []core.Display) []*core.Card 
 	return cards
 }
 
+// TODO: clean this up or move it.  Exported for savehandler
+var SaveDeck = writeDeckInfo
+
 func writeDeckInfo(path, display string, cards []*core.Card) {
 	info := []*core.Info{}
 	for _, c := range cards {

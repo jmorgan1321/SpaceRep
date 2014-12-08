@@ -90,35 +90,35 @@ func TestLoadDeck_All(t *testing.T) {
 
 		testdata := []*core.Card{
 			&core.Card{
-				Display: &basic.Display{Word: "push", Image: "push.jpg", Desc: "push desc", Hint: "push hint", Comp: 1},
+				Display: &basic.Display{Word: "push", Image: "push.jpg", Desc: "push desc", Hint: "push hint", Comp: "git command"},
 				Info:    core.Info{Set: "git", File: "push", Type: 1, Count: 2, Bucket: 0},
 			},
 			&core.Card{
-				Display: &basic.Display{Word: "add.", Image: "add.jpg", Desc: "add. desc", Hint: "add. hint", Comp: 1},
+				Display: &basic.Display{Word: "add.", Image: "add.jpg", Desc: "add. desc", Hint: "add. hint", Comp: "PowerPC instruction"},
 				Info:    core.Info{Set: "ppc", File: "add.", Type: 1, Count: 7, Bucket: 0},
 			},
 			&core.Card{
-				Display: &basic.Display{Word: "push", Image: "push.jpg", Desc: "push desc", Hint: "push hint", Comp: 1},
+				Display: &basic.Display{Word: "push", Image: "push.jpg", Desc: "push desc", Hint: "push hint", Comp: "git command"},
 				Info:    core.Info{Set: "git", File: "push", Type: 2, Count: 1, Bucket: 1},
 			},
 			&core.Card{
-				Display: &basic.Display{Word: "add.", Image: "add.jpg", Desc: "add. desc", Hint: "add. hint", Comp: 1},
+				Display: &basic.Display{Word: "add.", Image: "add.jpg", Desc: "add. desc", Hint: "add. hint", Comp: "PowerPC instruction"},
 				Info:    core.Info{Set: "ppc", File: "add.", Type: 2, Count: 3, Bucket: 1},
 			},
 			&core.Card{
-				Display: &basic.Display{Word: "commit", Image: "commit.jpg", Desc: "commit desc", Hint: "commit hint", Comp: 1},
+				Display: &basic.Display{Word: "commit", Image: "commit.jpg", Desc: "commit desc", Hint: "commit hint", Comp: "git command"},
 				Info:    core.Info{Set: "git", File: "commit", Type: 1, Count: 0, Bucket: 2},
 			},
 			&core.Card{
-				Display: &basic.Display{Word: "branch", Image: "branch.jpg", Desc: "branch desc", Hint: "branch hint", Comp: 1},
+				Display: &basic.Display{Word: "branch", Image: "branch.jpg", Desc: "branch desc", Hint: "branch hint", Comp: "PowerPC instruction"},
 				Info:    core.Info{Set: "ppc", File: "branch", Type: 1, Count: 1, Bucket: 2},
 			},
 			&core.Card{
-				Display: &basic.Display{Word: "commit", Image: "commit.jpg", Desc: "commit desc", Hint: "commit hint", Comp: 1},
+				Display: &basic.Display{Word: "commit", Image: "commit.jpg", Desc: "commit desc", Hint: "commit hint", Comp: "git command"},
 				Info:    core.Info{Set: "git", File: "commit", Type: 2, Count: 0, Bucket: 3},
 			},
 			&core.Card{
-				Display: &basic.Display{Word: "branch", Image: "branch.jpg", Desc: "branch desc", Hint: "branch hint", Comp: 1},
+				Display: &basic.Display{Word: "branch", Image: "branch.jpg", Desc: "branch desc", Hint: "branch hint", Comp: "PowerPC instruction"},
 				Info:    core.Info{Set: "ppc", File: "branch", Type: 2, Count: 0, Bucket: 3},
 			},
 		}
@@ -141,19 +141,19 @@ func TestLoadDeck_Specific(t *testing.T) {
 
 		testdata := []*core.Card{
 			&core.Card{
-				Display: &basic.Display{Word: "add.", Image: "add.jpg", Desc: "add. desc", Hint: "add. hint", Comp: 1},
+				Display: &basic.Display{Word: "add.", Image: "add.jpg", Desc: "add. desc", Hint: "add. hint", Comp: "PowerPC instruction"},
 				Info:    core.Info{Set: "ppc", File: "add.", Type: 1, Count: 7, Bucket: 0},
 			},
 			&core.Card{
-				Display: &basic.Display{Word: "add.", Image: "add.jpg", Desc: "add. desc", Hint: "add. hint", Comp: 1},
+				Display: &basic.Display{Word: "add.", Image: "add.jpg", Desc: "add. desc", Hint: "add. hint", Comp: "PowerPC instruction"},
 				Info:    core.Info{Set: "ppc", File: "add.", Type: 2, Count: 3, Bucket: 1},
 			},
 			&core.Card{
-				Display: &basic.Display{Word: "branch", Image: "branch.jpg", Desc: "branch desc", Hint: "branch hint", Comp: 1},
+				Display: &basic.Display{Word: "branch", Image: "branch.jpg", Desc: "branch desc", Hint: "branch hint", Comp: "PowerPC instruction"},
 				Info:    core.Info{Set: "ppc", File: "branch", Type: 1, Count: 1, Bucket: 2},
 			},
 			&core.Card{
-				Display: &basic.Display{Word: "branch", Image: "branch.jpg", Desc: "branch desc", Hint: "branch hint", Comp: 1},
+				Display: &basic.Display{Word: "branch", Image: "branch.jpg", Desc: "branch desc", Hint: "branch hint", Comp: "PowerPC instruction"},
 				Info:    core.Info{Set: "ppc", File: "branch", Type: 2, Count: 0, Bucket: 3},
 			},
 		}
@@ -286,8 +286,8 @@ func Test_getDeckInfo(t *testing.T) {
 func Test_getDataFromDisk(t *testing.T) {
 	usingTestdir(t, func() {
 		testdata := []core.Display{
-			&basic.Display{Word: "add.", Image: "add.jpg", Desc: "add. desc", Hint: "add. hint", Comp: 1},
-			&basic.Display{Word: "branch", Image: "branch.jpg", Desc: "branch desc", Hint: "branch hint", Comp: 1},
+			&basic.Display{Word: "add.", Image: "add.jpg", Desc: "add. desc", Hint: "add. hint", Comp: "PowerPC instruction"},
+			&basic.Display{Word: "branch", Image: "branch.jpg", Desc: "branch desc", Hint: "branch hint", Comp: "PowerPC instruction"},
 		}
 
 		path := testdir.name + "/html/decks/ppc/cards"
@@ -310,8 +310,8 @@ func Test_makeCards(t *testing.T) {
 		// old and new match
 		{
 			data: []core.Display{
-				&basic.Display{Word: "add.", Image: "add.jpg", Desc: "add. desc", Hint: "add. hint", Comp: 1},
-				&basic.Display{Word: "branch", Image: "branch.jpg", Desc: "branch desc", Hint: "branch hint", Comp: 1},
+				&basic.Display{Word: "add.", Image: "add.jpg", Desc: "add. desc", Hint: "add. hint", Comp: "PowerPC instruction"},
+				&basic.Display{Word: "branch", Image: "branch.jpg", Desc: "branch desc", Hint: "branch hint", Comp: "PowerPC instruction"},
 			},
 			info: []*core.Info{
 				&core.Info{Set: "ppc", File: "add.", Type: 1, Count: 7, Bucket: 0},
@@ -321,19 +321,19 @@ func Test_makeCards(t *testing.T) {
 			},
 			exp: []*core.Card{
 				&core.Card{
-					Display: &basic.Display{Word: "add.", Image: "add.jpg", Desc: "add. desc", Hint: "add. hint", Comp: 1},
+					Display: &basic.Display{Word: "add.", Image: "add.jpg", Desc: "add. desc", Hint: "add. hint", Comp: "PowerPC instruction"},
 					Info:    core.Info{Set: "ppc", File: "add.", Type: 1, Count: 7, Bucket: 0},
 				},
 				&core.Card{
-					Display: &basic.Display{Word: "add.", Image: "add.jpg", Desc: "add. desc", Hint: "add. hint", Comp: 1},
+					Display: &basic.Display{Word: "add.", Image: "add.jpg", Desc: "add. desc", Hint: "add. hint", Comp: "PowerPC instruction"},
 					Info:    core.Info{Set: "ppc", File: "add.", Type: 2, Count: 3, Bucket: 1},
 				},
 				&core.Card{
-					Display: &basic.Display{Word: "branch", Image: "branch.jpg", Desc: "branch desc", Hint: "branch hint", Comp: 1},
+					Display: &basic.Display{Word: "branch", Image: "branch.jpg", Desc: "branch desc", Hint: "branch hint", Comp: "PowerPC instruction"},
 					Info:    core.Info{Set: "ppc", File: "branch", Type: 1, Count: 1, Bucket: 2},
 				},
 				&core.Card{
-					Display: &basic.Display{Word: "branch", Image: "branch.jpg", Desc: "branch desc", Hint: "branch hint", Comp: 1},
+					Display: &basic.Display{Word: "branch", Image: "branch.jpg", Desc: "branch desc", Hint: "branch hint", Comp: "PowerPC instruction"},
 					Info:    core.Info{Set: "ppc", File: "branch", Type: 2, Count: 0, Bucket: 3},
 				},
 			},
@@ -341,7 +341,7 @@ func Test_makeCards(t *testing.T) {
 		// deleted 'branch'
 		{
 			data: []core.Display{
-				&basic.Display{Word: "add.", Image: "add.jpg", Desc: "add. desc", Hint: "add. hint", Comp: 1},
+				&basic.Display{Word: "add.", Image: "add.jpg", Desc: "add. desc", Hint: "add. hint", Comp: "PowerPC instruction"},
 			},
 			info: []*core.Info{
 				&core.Info{Set: "ppc", File: "add.", Type: 1, Count: 7, Bucket: 0},
@@ -351,11 +351,11 @@ func Test_makeCards(t *testing.T) {
 			},
 			exp: []*core.Card{
 				&core.Card{
-					Display: &basic.Display{Word: "add.", Image: "add.jpg", Desc: "add. desc", Hint: "add. hint", Comp: 1},
+					Display: &basic.Display{Word: "add.", Image: "add.jpg", Desc: "add. desc", Hint: "add. hint", Comp: "PowerPC instruction"},
 					Info:    core.Info{Set: "ppc", File: "add.", Type: 1, Count: 7, Bucket: 0},
 				},
 				&core.Card{
-					Display: &basic.Display{Word: "add.", Image: "add.jpg", Desc: "add. desc", Hint: "add. hint", Comp: 1},
+					Display: &basic.Display{Word: "add.", Image: "add.jpg", Desc: "add. desc", Hint: "add. hint", Comp: "PowerPC instruction"},
 					Info:    core.Info{Set: "ppc", File: "add.", Type: 2, Count: 3, Bucket: 1},
 				},
 			},
@@ -363,8 +363,8 @@ func Test_makeCards(t *testing.T) {
 		// add push.
 		{
 			data: []core.Display{
-				&basic.Display{Word: "cmp", Image: "cmp.jpg", Desc: "cmp desc", Hint: "cmp hint", Comp: 1},
-				&basic.Display{Word: "branch", Image: "branch.jpg", Desc: "branch desc", Hint: "branch hint", Comp: 1},
+				&basic.Display{Word: "cmp", Image: "cmp.jpg", Desc: "cmp desc", Hint: "cmp hint", Comp: "PowerPC instruction"},
+				&basic.Display{Word: "branch", Image: "branch.jpg", Desc: "branch desc", Hint: "branch hint", Comp: "PowerPC instruction"},
 			},
 			info: []*core.Info{
 				&core.Info{Set: "ppc", File: "branch", Type: 1, Count: 1, Bucket: 2},
@@ -372,19 +372,19 @@ func Test_makeCards(t *testing.T) {
 			},
 			exp: []*core.Card{
 				&core.Card{
-					Display: &basic.Display{Word: "cmp", Image: "cmp.jpg", Desc: "cmp desc", Hint: "cmp hint", Comp: 1},
+					Display: &basic.Display{Word: "cmp", Image: "cmp.jpg", Desc: "cmp desc", Hint: "cmp hint", Comp: "PowerPC instruction"},
 					Info:    core.Info{Set: "ppc", File: "cmp", Type: 1, Count: 0, Bucket: 0},
 				},
 				&core.Card{
-					Display: &basic.Display{Word: "cmp", Image: "cmp.jpg", Desc: "cmp desc", Hint: "cmp hint", Comp: 1},
+					Display: &basic.Display{Word: "cmp", Image: "cmp.jpg", Desc: "cmp desc", Hint: "cmp hint", Comp: "PowerPC instruction"},
 					Info:    core.Info{Set: "ppc", File: "cmp", Type: 2, Count: 0, Bucket: 0},
 				},
 				&core.Card{
-					Display: &basic.Display{Word: "branch", Image: "branch.jpg", Desc: "branch desc", Hint: "branch hint", Comp: 1},
+					Display: &basic.Display{Word: "branch", Image: "branch.jpg", Desc: "branch desc", Hint: "branch hint", Comp: "PowerPC instruction"},
 					Info:    core.Info{Set: "ppc", File: "branch", Type: 1, Count: 1, Bucket: 2},
 				},
 				&core.Card{
-					Display: &basic.Display{Word: "branch", Image: "branch.jpg", Desc: "branch desc", Hint: "branch hint", Comp: 1},
+					Display: &basic.Display{Word: "branch", Image: "branch.jpg", Desc: "branch desc", Hint: "branch hint", Comp: "PowerPC instruction"},
 					Info:    core.Info{Set: "ppc", File: "branch", Type: 2, Count: 0, Bucket: 3},
 				},
 			},

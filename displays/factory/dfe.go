@@ -20,5 +20,5 @@ func DFE(s string) (core.Display, error) {
 	case "basic":
 		return &basic.Display{}, nil
 	}
-	return nil, errors.New("unknown display types passed in: " + s)
+	return nil, errors.New("unknown display type passed in: " + s)
 }

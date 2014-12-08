@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"flag"
 	"fmt"
 	"log"
@@ -109,30 +108,8 @@ func saveDeck(deck *core.Deck) {
 	}
 
 	for set, cards := range sets {
-		fmt.Println("saving deck:", set)
-		saveCards(cards)
+		// TODO: root of path should not be hardcoded
+		path := "html/decks/" + set + "/cards/cards.info"
+		builder.SaveDeck(path, cards[0].Display.Type(), cards)
 	}
-}
-
-func saveCards(cards []*core.Card) {
-	allinfo := []*core.Info{}
-
-	for _, card := range cards {
-		allinfo = append(allinfo, &card.Info)
-	}
-
-	// rewrite .cards file
-	b, err := json.MarshalIndent(allinfo, "", "\t")
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	path := "html/decks/" + cards[0].Set + "/cards/cards.info"
-	f, err := os.Create(path)
-	if err != nil {
-		panic("file read error with: " + path)
-	}
-	defer f.Close()
-
-	f.Write(b)
 }

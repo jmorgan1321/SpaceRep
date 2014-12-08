@@ -5,7 +5,7 @@ import "github.com/jmorgan1321/SpaceRep/internal/core"
 // Display represent field that we want to display on cards.
 type Display struct {
 	Word, Image, Desc, Hint string
-	Comp                    CodeComponent
+	Comp                    string
 	Typ                     Type
 }
 

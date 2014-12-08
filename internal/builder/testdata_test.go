@@ -61,12 +61,12 @@ var testdir = &Node{
 										{
 											name:    "add..data",
 											entries: nil,
-											content: `{"Word": "add.", "Image": "add.jpg", "Desc": "add. desc", "Hint": "add. hint", "Comp": 1 }`,
+											content: `{"Word": "add.", "Image": "add.jpg", "Desc": "add. desc", "Hint": "add. hint", "Comp": "PowerPC instruction" }`,
 										},
 										{
 											name:    "branch.data",
 											entries: nil,
-											content: `{"Word": "branch", "Image": "branch.jpg", "Desc": "branch desc", "Hint": "branch hint", "Comp": 1 }`,
+											content: `{"Word": "branch", "Image": "branch.jpg", "Desc": "branch desc", "Hint": "branch hint", "Comp": "PowerPC instruction" }`,
 										},
 										{
 											name:    "cards.info",
@@ -102,12 +102,12 @@ var testdir = &Node{
 										{
 											name:    "push.data",
 											entries: nil,
-											content: `{"Word": "push", "Image": "push.jpg", "Desc": "push desc", "Hint": "push hint", "Comp": 1 }`,
+											content: `{"Word": "push", "Image": "push.jpg", "Desc": "push desc", "Hint": "push hint", "Comp": "git command" }`,
 										},
 										{
 											name:    "commit.data",
 											entries: nil,
-											content: `{"Word": "commit", "Image": "commit.jpg", "Desc": "commit desc", "Hint": "commit hint", "Comp": 1 }`,
+											content: `{"Word": "commit", "Image": "commit.jpg", "Desc": "commit desc", "Hint": "commit hint", "Comp": "git command" }`,
 										},
 										{
 											name:    "cards.info",

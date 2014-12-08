@@ -46,10 +46,10 @@ func reviewHandler(rw http.ResponseWriter, r *http.Request) {
 
 	// create new flashcard html
 	html, err := g_currCard.Render()
-	fmt.Println("html:", html)
 	if err != nil {
 		log.Fatal(err)
 	}
+	// fmt.Println("html:", html)
 
 	// send next card's html back
 	rw.Header().Set("Content-Type", "application/json")

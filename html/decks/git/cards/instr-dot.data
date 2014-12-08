@@ -3,5 +3,5 @@
     "Image": "condition.jpg",
     "Desc": "signifies that 'instr' updates the condition-code CR0 bits",
     "Hint": "",
-    "Comp": 1
+    "Comp": "PowerPC instruction"
 }

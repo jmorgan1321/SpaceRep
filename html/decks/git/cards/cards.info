@@ -2,7 +2,7 @@
     "Display": "basic",
     "Info": [
         {
-			"File": "add-dot",
+			"File": "add.",
 			"Type": 1,
 			"Count": 0,
 			"Bucket": 0,
@@ -10,7 +10,7 @@
 			"LastSeen": "0001-01-01T00:00:00Z"
 		},
 		{
-			"File": "add-dot",
+			"File": "add.",
 			"Type": 2,
 			"Count": 0,
 			"Bucket": 0,

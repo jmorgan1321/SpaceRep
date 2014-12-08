@@ -444,3 +444,7 @@ func Test_makeCardsSetsDisplayTmpl(t *testing.T) {
 func Test_makeCardsSetsInfoSet(t *testing.T) {
 	test.Assert(t, false, "untested")
 }
+
+func TestLoadCards_CardsInfoGetsCreatedIfItDoesntExist(t *testing.T) {
+	test.Assert(t, false, "untested")
+}

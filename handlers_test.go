@@ -5,7 +5,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/jmorgan1321/SpaceRep/v1/internal/test"
+	"github.com/jmorgan1321/SpaceRep/internal/test"
 )
 
 type TestServer struct {

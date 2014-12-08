@@ -3,7 +3,7 @@ package main
 // import (
 // 	"testing"
 
-// 	"github.com/jmorgan1321/SpaceRep/v1/internal/test"
+// 	"github.com/jmorgan1321/SpaceRep/internal/test"
 // )
 
 // func TestMain(t *testing.T) {

@@ -9,9 +9,9 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/jmorgan1321/SpaceRep/v1/internal/builder"
-	"github.com/jmorgan1321/SpaceRep/v1/internal/core"
-	"github.com/jmorgan1321/SpaceRep/v1/internal/env"
+	"github.com/jmorgan1321/SpaceRep/internal/builder"
+	"github.com/jmorgan1321/SpaceRep/internal/core"
+	"github.com/jmorgan1321/SpaceRep/internal/env"
 )
 
 var (
@@ -37,7 +37,7 @@ func main() {
 	flag.Parse()
 
 	deck, err := builder.New(
-		builder.DFE(dfe),
+		// builder.DFE(factory.DFE),
 		builder.Deck(*set),
 	).LoadDeck()
 

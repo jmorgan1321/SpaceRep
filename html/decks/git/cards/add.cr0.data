@@ -1,7 +1,0 @@
-{
-    "Word": "add.cr0",
-    "Image": "condition.jpg",
-    "Desc": "has the values of: LT if sum < 0; GT if sum > 0; Zero if sum is 0; and SO equals to SO bit from xer after execution",
-    "Hint": "",
-    "Comp": "PowerPC register"
-}

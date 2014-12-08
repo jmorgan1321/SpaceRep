@@ -1,0 +1,7 @@
+{
+    "Word": "push",
+    "Image": "add.jpg",
+    "Desc": "check in work you've done to the central repository",
+    "Hint": "",
+    "Comp": "git instruction"
+}

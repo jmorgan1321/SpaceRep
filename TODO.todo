@@ -36,6 +36,8 @@ Server:
             ✔ display type is stored in cards.info @done (14-12-08 02:05)
             ✔ dfe moves to core, gets built automatically @done (14-12-08 02:05)
         ☐ Save seems to be broken, investigate.
+        ☐ review/forgot seems to be broken, investigate
+
     Refactor:
         ☐ WRITE UNIT TESTS!!
         ☐ Error Handle

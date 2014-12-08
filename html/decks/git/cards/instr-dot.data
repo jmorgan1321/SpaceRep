@@ -1,7 +1,0 @@
-{
-    "Word": "instr-dot",
-    "Image": "condition.jpg",
-    "Desc": "signifies that 'instr' updates the condition-code CR0 bits",
-    "Hint": "",
-    "Comp": "PowerPC instruction"
-}

@@ -1,7 +1,0 @@
-{
-    "Word": "addo",
-    "Image": "add.jpg",
-    "Desc": "performs add but also updates xer if signed overflow occurs",
-    "Hint": "rd := rs1 + rs2; xer is set if signed overflow occurs; d, s1, s3 Ex [0...31]",
-    "Comp": "PowerPC instruction"
-}

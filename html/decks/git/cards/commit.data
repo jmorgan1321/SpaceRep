@@ -1,0 +1,7 @@
+{
+    "Word": "commit",
+    "Image": "exception.jpg",
+    "Desc": "check in work you done (locally)",
+    "Hint": "some hint",
+    "Comp": "git command"
+}

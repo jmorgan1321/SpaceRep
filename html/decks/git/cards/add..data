@@ -1,7 +1,0 @@
-{
-    "Word": "add.",
-    "Image": "add.jpg",
-    "Desc": "is like add but also updates cr0 with result of the sum",
-    "Hint": "rd := rs1 + rs2; cr0 reflects result of sum; d, s1, s3 Ex [0...31]",
-    "Comp": "PowerPc instruction"
-}

@@ -105,7 +105,9 @@ func (c *Card) Render() (string, error) {
 		if tmap, found := ScopedTmplMap[scope]; found {
 			if tmpl, found := tmap[c.Tmpl()]; found {
 				var html bytes.Buffer
-				tmpl.Execute(&html, c.Display)
+				if err := tmpl.Execute(&html, c.Display); err != nil {
+					return "", err
+				}
 				return html.String(), nil
 			}
 		} else {

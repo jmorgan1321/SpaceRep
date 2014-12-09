@@ -8,6 +8,7 @@ Web Client:
     ☐ clean up navigation, header, footer
     ✔ separate out scripts and html @done (14-12-07 16:25)
     ☐ remove hint parens, if no hint
+        ☐ Use a template function that operates on {{.Hint|filter_blank}}
     ☐ make sure hint is never on card border
 
 Server:

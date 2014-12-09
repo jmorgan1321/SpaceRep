@@ -205,23 +205,8 @@ func TestDisplayRendersTemplatesFromDefaultOrLocalDir(t *testing.T) {
 	})
 }
 
-func Test_getDisplayErrorsOnUnknownType(t *testing.T) {
-	deck := New(dir(testdir.name), Deck("ppc"))
-	d, err := deck.getDisplay("unknown")
-	test.Assert(t, err != nil, "expected error, got: %v", err)
-	test.Expect(t, d == nil, "expected nil, got: %v", d)
-}
-
 func TestDisplaysAreCreatedWithType(t *testing.T) {
-	deck := New(dir(testdir.name), Deck("ppc"), DFE(testDFE))
-	d, err := deck.getDisplay("ppc")
-	test.Assert(t, err == nil, "unexpected error: %v", err)
-
-	d.SetTmpl(1)
-	test.ExpectEQ(t, "thisdoesx", d.Tmpl(), "wrong tmpl (1)")
-
-	d.SetTmpl(2)
-	test.ExpectEQ(t, "xdoesthis", d.Tmpl(), "wrong tmpl (2)")
+	test.Assert(t, false, "untested")
 }
 
 func Test_getDeckInfo(t *testing.T) {
@@ -446,5 +431,58 @@ func Test_makeCardsSetsInfoSet(t *testing.T) {
 }
 
 func TestLoadCards_CardsInfoGetsCreatedIfItDoesntExist(t *testing.T) {
+	test.Assert(t, false, "untested")
+}
+
+func TestCardRender(t *testing.T) {
+	// 	testdata := []struct {
+	// 		in  *core.Card
+	// 		out string
+	// 	}{
+	// 		{
+	// 			in: &core.Card{
+	// 				Display: &basic.Display{Word: "cmp", Image: "cmp.jpg", Desc: "Desc", Hint: "Hint", Comp: "Comp"},
+	// 				Info:    core.Info{Set: "ppc", File: "cmp", Type: 1, Count: 0, Bucket: 0},
+	// 			},
+	// 			out: `
+	// <div class="front">
+	//     <p>What Comp Desc?</p>
+	// </div>
+	// <div class="back">
+	//     <p><b>cmp</b></p>
+	//     <img src="/decks/ppc/image/cmp.jpg" height="150" width="150" />
+	//     <p>(Hint)</p>
+	//  </div>
+	// `,
+	// 		},
+	// 	}
+
+	// 	testTmpl := `
+	// {{define "front"}}<p>What {{.Comp}} {{.Desc}}?</p>{{end}}
+	// {{define "back"}}
+	//     <p><b>{{.Word}}</b></p>
+	//     <img src="/decks/{{.Set}}/image/{{.Image}}" height="150" width="150" />
+	//     <p>({{.Hint}})</p>{{end}}
+	// `
+
+	// 	tmpl, err := template.New("base").Parse(tmplIndex)
+	// 	test.Assert(t, err == nil, "parsing base: %v", err)
+
+	// 	for i, tt := range testdata {
+	// 		tt.in.Display.SetInfo(&tt.in.Info)
+
+	// 		tmpl2, err := tmpl.Clone()
+	// 		test.Assert(t, err == nil, "clone %v: %v", i, err)
+
+	// 		tmpl2, err = tmpl2.Parse(testTmpl)
+	// 		test.Assert(t, err == nil, "parse %v: %v", i, err)
+
+	// 		var html bytes.Buffer
+	// 		err = tmpl2.Execute(&html, tt.in.Display)
+	// 		test.Assert(t, err == nil, "execute %v: %v", i, err)
+
+	// 		exp, act := strings.TrimSpace(tt.out), strings.TrimSpace(html.String())
+	// 		test.ExpectEQ(t, exp, act, fmt.Sprintf("test %v:", i))
+	// 	}
 	test.Assert(t, false, "untested")
 }

@@ -91,17 +91,6 @@ func (b *Builder) getDecks() ([]string, error) {
 	return decks, nil
 }
 
-func (b *Builder) getDisplay(s string) (core.Display, error) {
-	var d core.Display
-	if b.dfe != nil {
-		d = b.dfe(strings.ToLower(s))
-	}
-	if d == nil {
-		return nil, errors.New("unknown display type passed in: " + s)
-	}
-	return d, nil
-}
-
 var tmplIndex = `
 <div class="front">
     {{template "front" .}}
@@ -261,6 +250,7 @@ func makeCards(set string, info []*core.Info, data []core.Display) []*core.Card 
 				i.Set = set
 				d.SetTmpl(int(i.Type))
 				c := &core.Card{Info: i, Display: d}
+				c.Display.SetInfo(&c.Info)
 				cards = append(cards, c)
 			}
 		}
@@ -273,6 +263,7 @@ func makeCards(set string, info []*core.Info, data []core.Display) []*core.Card 
 			i.Set = set
 			displayMap[i.File].SetTmpl(int(i.Type))
 			c := &core.Card{Info: *i, Display: displayMap[i.File]}
+			c.Display.SetInfo(&c.Info)
 			cards = append(cards, c)
 		}
 	}

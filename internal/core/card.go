@@ -47,6 +47,7 @@ type Display interface {
 
 	// Displays know how to create corresponding info data.
 	CreateInfo(name string) []Info
+	SetInfo(*Info)
 
 	Type() string
 }

@@ -7,6 +7,7 @@ type Display struct {
 	Word, Image, Desc, Hint string
 	Comp                    string
 	Typ                     Type
+	*core.Info
 }
 
 func (d *Display) Name() string {
@@ -23,6 +24,10 @@ func (d *Display) Tmpl() string {
 
 func (d *Display) Type() string {
 	return "basic"
+}
+
+func (d *Display) SetInfo(i *core.Info) {
+	d.Info = i
 }
 
 func (d *Display) CreateInfo(word string) []core.Info {

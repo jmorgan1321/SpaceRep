@@ -1,6 +1,7 @@
 package builder
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -323,4 +324,134 @@ func (b *Builder) LoadDeck() (*core.Deck, error) {
 	}
 
 	return deck, nil
+}
+
+type Card interface {
+	// Info
+	Display
+
+	// UpdateBucket()
+}
+
+// type Info interface {
+// 	File() string
+// 	Set() string
+// 	// Type() int
+// 	// Count() int
+// 	// Bucket() int
+// }
+
+type Display interface {
+	SetInfo(Info)
+	Info() Info
+	Type() string // type of display.  ie, "basic"
+	Name() string // The thing we're displaying
+	Tmpl() string
+
+	Clone(Info) Display
+	Render(core.ScopeTmplMap) (string, error)
+	// CreateInfo(name string) []Info
+}
+
+type Info struct {
+	File, Set     string
+	Type          int
+	Count, Bucket int
+}
+
+type BasicDisplay struct {
+	Stat                          Info
+	Word, Image, Desc, Hint, Comp string
+}
+
+func (b *BasicDisplay) Name() string   { return b.Word }
+func (b *BasicDisplay) Type() string   { return "basic" }
+func (b *BasicDisplay) Tmpl() string   { return "thisdoesx" }
+func (b *BasicDisplay) SetInfo(i Info) { b.Stat = i }
+func (b *BasicDisplay) Info() Info     { return b.Stat }
+func (b *BasicDisplay) Clone(i Info) Display {
+	return &BasicDisplay{
+		Stat:  i,
+		Word:  b.Word,
+		Image: b.Image,
+		Desc:  b.Desc,
+		Hint:  b.Hint,
+		Comp:  b.Comp,
+	}
+}
+func (b *BasicDisplay) Render(s core.ScopeTmplMap) (string, error) {
+	scopes := []string{b.Info().Set, "html"}
+
+	for _, scope := range scopes {
+		if tmap, found := s[scope]; found {
+			if tmpl, found := tmap[b.Tmpl()]; found {
+				var html bytes.Buffer
+				if err := tmpl.Execute(&html, b); err != nil {
+					return "", err
+				}
+				return html.String(), nil
+			}
+		} else {
+			log.Fatal("deck not found in scope: ", scope)
+		}
+	}
+
+	return "", errors.New("couldn't find template to render")
+
+}
+
+type DispHolder struct {
+	File string
+	Disp Display
+}
+
+func makeCards2(set string, info []Info, hldr []DispHolder) []Card {
+	// throw the info's in a map
+	fileMap := map[string]bool{}
+	for _, i := range info {
+		fileMap[i.File] = false
+	}
+
+	cards := []Card{}
+	displayMap := map[string]Display{}
+	// Figure out which displays are new, by checking against the fileMap.
+	// A display is new if it isn't in the fileMap.
+	for _, h := range hldr {
+		d := h.Disp
+		displayMap[h.File] = d
+		if _, found := fileMap[h.File]; found {
+			fileMap[h.File] = true
+		} else {
+			nc, _ := TempDFE(d, h.File)
+			cards = append(cards, nc...)
+		}
+	}
+
+	// Only add cards that haven't been deleted,
+	//	by checking against fileMap.
+	for _, i := range info {
+		if inBoth := fileMap[i.File]; inBoth {
+			d := displayMap[i.File].Clone(i)
+			cards = append(cards, d)
+		}
+	}
+
+	return cards
+}
+
+func CreateCards(d Display, file string) []Card {
+	return []Card{
+		d.Clone(Info{File: file, Type: 0}),
+		d.Clone(Info{File: file, Type: 1}),
+	}
+}
+
+// TODO: change the case labels to be names of displays that
+//       get stored in a cards.info file.  ie, "basic"
+func TempDFE(d Display, file string) ([]Card, error) {
+	switch d.Type() {
+	case "basic":
+		return CreateCards(d, file), nil
+	}
+	return nil, errors.New("unknown display type passed in: " + d.Type())
 }

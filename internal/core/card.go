@@ -11,6 +11,7 @@ import (
 )
 
 type TmplMap map[string]*template.Template
+type ScopeTmplMap map[string]TmplMap
 
 // ScopedTmplMap is used to create a scoped map of templates like so:
 // 	{

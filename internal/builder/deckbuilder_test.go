@@ -6,6 +6,7 @@ import (
 	"os"
 	"strings"
 	"testing"
+	"text/template"
 
 	"github.com/jmorgan1321/SpaceRep/displays/basic"
 	"github.com/jmorgan1321/SpaceRep/internal/core"
@@ -434,55 +435,136 @@ func TestLoadCards_CardsInfoGetsCreatedIfItDoesntExist(t *testing.T) {
 	test.Assert(t, false, "untested")
 }
 
-func TestCardRender(t *testing.T) {
-	// 	testdata := []struct {
-	// 		in  *core.Card
-	// 		out string
-	// 	}{
-	// 		{
-	// 			in: &core.Card{
-	// 				Display: &basic.Display{Word: "cmp", Image: "cmp.jpg", Desc: "Desc", Hint: "Hint", Comp: "Comp"},
-	// 				Info:    core.Info{Set: "ppc", File: "cmp", Type: 1, Count: 0, Bucket: 0},
-	// 			},
-	// 			out: `
-	// <div class="front">
-	//     <p>What Comp Desc?</p>
-	// </div>
-	// <div class="back">
-	//     <p><b>cmp</b></p>
-	//     <img src="/decks/ppc/image/cmp.jpg" height="150" width="150" />
-	//     <p>(Hint)</p>
-	//  </div>
-	// `,
-	// 		},
-	// 	}
+func TestCardInterface(t *testing.T) {
+	testdata := []struct {
+		info []Info
+		hldr []DispHolder
+		out  []Card
+		desc string
+	}{
+		{
+			info: []Info{
+				{File: "add.data", Type: 0},
+				{File: "add.data", Type: 1},
+			},
+			hldr: []DispHolder{
+				{File: "add.data", Disp: &BasicDisplay{Word: "add"}},
+			},
+			out: []Card{
+				&BasicDisplay{
+					Stat: Info{File: "add.data", Type: 0},
+					Word: "add",
+				},
+				&BasicDisplay{
+					Stat: Info{File: "add.data", Type: 1},
+					Word: "add",
+				},
+			},
+			desc: "basic case (no add, no del)",
+		},
 
-	// 	testTmpl := `
-	// {{define "front"}}<p>What {{.Comp}} {{.Desc}}?</p>{{end}}
-	// {{define "back"}}
-	//     <p><b>{{.Word}}</b></p>
-	//     <img src="/decks/{{.Set}}/image/{{.Image}}" height="150" width="150" />
-	//     <p>({{.Hint}})</p>{{end}}
-	// `
+		{
+			info: []Info{},
+			hldr: []DispHolder{
+				{File: "add.data", Disp: &BasicDisplay{Word: "add"}},
+			},
+			out: []Card{
+				&BasicDisplay{
+					Stat: Info{File: "add.data", Type: 0},
+					Word: "add",
+				},
+				&BasicDisplay{
+					Stat: Info{File: "add.data", Type: 1},
+					Word: "add",
+				},
+			},
+			desc: "add add.data",
+		},
 
-	// 	tmpl, err := template.New("base").Parse(tmplIndex)
-	// 	test.Assert(t, err == nil, "parsing base: %v", err)
+		{
+			info: []Info{
+				{File: "add.data", Type: 0},
+				{File: "add.data", Type: 1},
+			},
+			hldr: []DispHolder{},
+			out:  []Card{},
+			desc: "del add.data",
+		},
+	}
 
-	// 	for i, tt := range testdata {
-	// 		tt.in.Display.SetInfo(&tt.in.Info)
+	for i, tt := range testdata {
+		cards := makeCards2("ppc", tt.info, tt.hldr)
+		test.Assert(t, len(cards) == len(tt.out), "test %v: len mismatch", i)
 
-	// 		tmpl2, err := tmpl.Clone()
-	// 		test.Assert(t, err == nil, "clone %v: %v", i, err)
+		for j, exp := range tt.out {
+			act := cards[j]
+			checkCard2(t, j, exp, act)
 
-	// 		tmpl2, err = tmpl2.Parse(testTmpl)
-	// 		test.Assert(t, err == nil, "parse %v: %v", i, err)
+			if t.Failed() {
+				fmt.Printf("test %v, card %v: %v\n", i, j, tt.desc)
+			}
+		}
+	}
+}
 
-	// 		var html bytes.Buffer
-	// 		err = tmpl2.Execute(&html, tt.in.Display)
-	// 		test.Assert(t, err == nil, "execute %v: %v", i, err)
+// TODO: switch to new interfaces.
+// TODO: separate out tests into their correct packages.
+// TODO: test core package against mock interfaces, add tests for concrete types.
 
-	// 		exp, act := strings.TrimSpace(tt.out), strings.TrimSpace(html.String())
-	// 		test.ExpectEQ(t, exp, act, fmt.Sprintf("test %v:", i))
-	// 	}
-	test.Assert(t, false, "untested")
+// TODO: test that type renders output correctly.
+func TestCardRender2(t *testing.T) {
+	scopeTmplMap := core.ScopeTmplMap{
+		"ppc": core.TmplMap{
+			"thisdoesx": template.Must(template.New("base").Parse(`
+				this does x
+				`)),
+			"xdoesthat": template.Must(template.New("base").Parse(`
+				x does that
+				`)),
+		},
+	}
+
+	testdata := []struct {
+		c   Card
+		exp string
+	}{
+		{
+			c:   &BasicDisplay{Stat: Info{Set: "ppc"}},
+			exp: "this does x",
+		},
+	}
+
+	for i, tt := range testdata {
+		s, err := tt.c.Render(scopeTmplMap)
+		test.Assert(t, err == nil, "test %v, render: %v", i, err)
+		act := strings.TrimSpace(s)
+		test.ExpectEQ(t, tt.exp, act, fmt.Sprintf("test %v", i))
+	}
+}
+
+func checkCard2(t *testing.T, i int, exp, act Card) {
+	checkDisplay2(t, i, exp.(Display), act.(Display))
+	checkInfo2(t, i, exp.Info(), act.Info())
+}
+
+func checkDisplay2(t *testing.T, i int, exp, act Display) {
+	// check card display
+	e, ok := exp.(*BasicDisplay)
+	a, ok := act.(*BasicDisplay)
+	test.Assert(t, ok, "card %v: expected (*basic.Display), got %v:", i, a)
+
+	test.ExpectEQ(t, e.Word, a.Word, "card %d: Word match", i)
+	test.ExpectEQ(t, e.Desc, a.Desc, "card %d: Desc match", i)
+	test.ExpectEQ(t, e.Hint, a.Hint, "card %d: Hint match", i)
+	test.ExpectEQ(t, e.Comp, a.Comp, "card %d: Comp match", i)
+	test.ExpectEQ(t, e.Image, a.Image, "card %d: Image match", i)
+}
+
+func checkInfo2(t *testing.T, i int, exp, act Info) {
+	// check card info
+	test.ExpectEQ(t, exp.Set, act.Set, "card %d: Set match", i)
+	test.ExpectEQ(t, exp.File, act.File, "card %d: Filenames match", i)
+	test.ExpectEQ(t, exp.Type, act.Type, "card %d: Type match", i)
+	test.ExpectEQ(t, exp.Count, act.Count, "card %d: Count match", i)
+	test.ExpectEQ(t, exp.Bucket, act.Bucket, "card %d: Bucket match", i)
 }

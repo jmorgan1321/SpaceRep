@@ -38,6 +38,63 @@ Server:
             ✔ dfe moves to core, gets built automatically @done (14-12-08 02:05)
         ☐ Save seems to be broken, investigate.
         ☐ review/forgot seems to be broken, investigate
+        ☐ Store card info in display
+            ☐ make info an interface
+                ☐ basic.Display will embed info struct, thus meet interface
+            ☐ No need for distinction between display and a card
+                ☐ Card is interface?
+                    type Card interface {
+                        Info
+                        Display
+                    }
+
+                    type Info interface {
+                        File() string
+                        Set() string
+                        Type() int // used to serialize in from file
+                        Count() int
+                        Bucket() int
+                    }
+
+                    type Display interface {
+                        Name() synonymous with file
+                        Tmpl() string // Matches name in TmplMap
+                        CreateInfo(name string) []Info // This can become CreateCard
+
+                        // No longer needed:
+
+                        Type() string // Matches name in TmplMap
+                        SetTmpl(int) // int is Info type
+                        SetInfo
+                    }
+
+                    type CardInfo struct {
+                        //...
+                    }
+                    func (c *CardInfo) File() { return c.File }
+
+                    type basic.Card struct {
+                        CardInfo
+                        Word, Image, Desc, Hint, Comp string
+                    }
+
+                    b := basic.Card{
+                        Info: Info{file, set, ...},
+                        Word: add
+                        Desc: sums two registers...
+                        //...
+                    }
+
+                    func (c *Card) Name() { return c.File }
+                    func (c *Card) Tmpl() {
+                        switch c.Type() {
+                        case 1:
+                            return "thisdoesx"
+                        }
+                    }
+                    func CreateCards(name string) {
+
+                    }
 
     Refactor:
         ☐ WRITE UNIT TESTS!!

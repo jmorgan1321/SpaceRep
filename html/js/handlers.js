@@ -8,6 +8,8 @@ $(document).ready(function() {
             Status: "Accept",
         }
 
+        // $('#AcceptSnd').trigger('play');
+
         $.ajax({
             type: "POST",
             url: "/api/v1/review/accept",
@@ -32,6 +34,8 @@ $(document).ready(function() {
             Status: "Forgot",
         }
 
+        // $('#ForgotSnd').trigger('play');
+
         $.ajax({
             type: "POST",
             url: "/api/v1/review/forgot",
@@ -54,6 +58,8 @@ $(document).ready(function() {
         var data = {
             Status: "Save",
         }
+
+        // $('#SaveSnd').trigger('play');
 
         $.ajax({
             type: "POST",

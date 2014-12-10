@@ -7,7 +7,7 @@ func (t Type) String() string {
 	case DescCard:
 		return "thisdoesx"
 	case WordCard:
-		return "xdoesthis"
+		return "xdoesthat"
 	}
 	return "Unknown..."
 }

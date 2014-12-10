@@ -8,8 +8,10 @@
 <script src="deps/jquery-1.9.1.min.js"></script>
 <!-- <script src="http://code.jquery.com/jquery-latest.min.js"></script> -->
 <script src="js/handlers.js"></script>
+<script src="js/nav.js"></script>
 
 <body>
+    <div id="header"></div>
 
     <div class="stage">
         <div class="flashcard" id="flashcardDiv">
@@ -29,10 +31,11 @@
 
     <div id="rows">
         <div class="row2">
-            <button type="button" id="AcceptBtn">Accept</button>
-            <button type="button" id="ForgotBtn">Forgot</button>
-            <button type="button" id="SaveBtn">Save Session</button>
+            <input type="image" id="AcceptBtn" src="/img/green-check-mark.png">
+            <input type="image" id="ForgotBtn" src="/img/red-x-mark.png">
+            <input type="image" id="SaveBtn" src="/img/save.png">
         </div>
     </div>
 
+    <div id="footer"></div>
 </body>

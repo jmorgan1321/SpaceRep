@@ -22,6 +22,7 @@ $(document).ready(function() {
             console.dir(xhr);
 
             $('.flashcard').toggleClass('flipped', false);
+            // TODO: add slide animation or transition
             $('#flashcardDiv').html(data.newCard);
         });
     });
@@ -38,11 +39,11 @@ $(document).ready(function() {
             contentType: 'application/json; charset=utf-8',
             dataType: 'json',
         })
-        .always(function(a, textStatus, b) {
+        .always(function(data, textStatus, xhr) {
             console.log("finished");
             console.log("textStatus: " + textStatus);
-            console.dir(a);
-            console.dir(b);
+            console.dir(data);
+            console.dir(xhr);
 
             $('.flashcard').toggleClass('flipped', false);
             $('#flashcardDiv').html(data.newCard);
@@ -70,6 +71,4 @@ $(document).ready(function() {
 
         alert("Saved Session Data")
     });
-
-
 });

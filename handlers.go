@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"time"
 
 	"github.com/gorilla/mux"
+	"github.com/jmorgan1321/SpaceRep/internal/core"
 )
 
 type Response map[string]interface{}
@@ -28,28 +28,26 @@ func cardIndexHandler(rw http.ResponseWriter, r *http.Request) {
 func reviewHandler(rw http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	value := vars["value"]
-	fmt.Println(value)
 
 	// update card count based on user response
 	switch value {
 	case "accept":
-		g_currCard.IncCount()
+		g_currCard.Stats().IncCount()
 	case "forgot":
-		g_currCard.DecCount()
+		g_currCard.Stats().DecCount()
 	}
 
-	// Update card seen information
-	if g_currCard.FirstSeen.IsZero() {
-		g_currCard.FirstSeen = time.Now()
-	}
-	g_currCard.LastSeen = time.Now()
+	// // Update card seen information
+	// if g_currCard.FirstSeen.IsZero() {
+	// 	g_currCard.FirstSeen = time.Now()
+	// }
+	// g_currCard.LastSeen = time.Now()
 
 	// create new flashcard html
-	html, err := g_currCard.Render()
+	html, err := core.Render(core.ScopedTmplMap, g_currCard)
 	if err != nil {
 		log.Fatal(err)
 	}
-	// fmt.Println("html:", html)
 
 	// send next card's html back
 	rw.Header().Set("Content-Type", "application/json")

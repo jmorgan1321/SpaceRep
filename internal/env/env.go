@@ -16,9 +16,9 @@ type Env struct {
 	// SessionLength float32 // Duration of this session in minutes
 }
 
-type Option func(*Env)
+type option func(*Env)
 
-func New(opts ...Option) *Env {
+func New(opts ...option) *Env {
 	env := &Env{
 		Seed: 42,
 	}
@@ -33,19 +33,19 @@ func New(opts ...Option) *Env {
 // DistributionFunc is used by the environment to determine what
 // percentage of the time each bucket should display a test to
 // the user.
-func DistributionFunc(f func(deck *core.Deck, sessionLength float32) [core.BucketCount]float32) Option {
+func DistributionFunc(f func(deck *core.Deck, sessionLength float32) [core.BucketCount]float32) option {
 	return func(e *Env) {
 		e.Distributions = f(e.Deck, 10.0)
 	}
 }
 
-func Deck(d *core.Deck) Option {
+func Deck(d *core.Deck) option {
 	return func(e *Env) {
 		e.Deck = d
 	}
 }
 
-func Seed(seed int64) Option {
+func Seed(seed int64) option {
 	return func(e *Env) {
 		e.Seed = seed
 	}

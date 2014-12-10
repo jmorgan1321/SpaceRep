@@ -13,12 +13,10 @@ import (
 	"github.com/jmorgan1321/SpaceRep/internal/core"
 )
 
-// TODO: change the case labels to be names of displays that
-//       get stored in a cards.info file.  ie, "basic"
-func DFE(s string) (core.Display, error) {
+func DFE(s string) (core.Card, error) {
 	switch s {
 	case "basic":
-		return &basic.Display{}, nil
+		return &basic.Card{}, nil
 	}
 	return nil, errors.New("unknown display type passed in: " + s)
 }

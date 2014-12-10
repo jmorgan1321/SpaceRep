@@ -5,5 +5,5 @@
 {{define "back"}}
     <p><b>{{.Word}}</b> {{.Desc}}</p>
     <img src="/decks/{{.Set}}/image/{{.Image}}" height="150" width="150" />
-    <p>({{.Hint}})</p>
+    {{with .Hint}}<p>({{.}})</p>{{end}}
 {{end}}

@@ -41,6 +41,49 @@ type Node struct {
 	content string  // only files have content.
 }
 
+func walkdir(n *Node, path string, f func(path string, n *Node)) {
+	f(path, n)
+	for _, e := range n.entries {
+		walkdir(e, filepath.Join(path, e.name), f)
+	}
+}
+
+func makedir(t *testing.T, testdir *Node) {
+	walkdir(testdir, testdir.name, func(path string, n *Node) {
+		if n.entries == nil {
+			fd, err := os.Create(path)
+			if err != nil {
+				t.Errorf("makedir: %v", err)
+				return
+			}
+
+			if n.content != "" {
+				_, err := fd.Write([]byte(n.content))
+				if err != nil {
+					t.Errorf("write file: %v", err)
+				}
+			}
+			fd.Close()
+		} else {
+			os.Mkdir(path, 0770)
+		}
+	})
+}
+
+func usingTestdir(t *testing.T, testdir *Node, f func()) {
+	// set up testdir
+	makedir(t, testdir)
+	// clean up testdir
+	defer func() {
+		if err := os.RemoveAll(testdir.name); err != nil {
+			t.Errorf("removedir: %v", err)
+		}
+	}()
+
+	// call test function
+	f()
+}
+
 var testdir = &Node{
 	name: "testdata",
 	entries: []*Node{
@@ -75,10 +118,10 @@ var testdir = &Node{
 											{
 												"Display": "basic",
 												"Info": [
-	                                                {"File": "add.", "Type": 1, "Count": 7, "Bucket": 0 },
-	                                                {"File": "add.", "Type": 2, "Count": 3, "Bucket": 1 },
-	                                                {"File": "branch", "Type": 1, "Count": 1, "Bucket": 2 },
-	                                                {"File": "branch", "Type": 2, "Count": 0, "Bucket": 3 }
+	                                                {"File": "add..data", "Type": 1, "Count": 7, "Bucket": 0 },
+	                                                {"File": "add..data", "Type": 2, "Count": 3, "Bucket": 1 },
+	                                                {"File": "branch.data", "Type": 1, "Count": 1, "Bucket": 2 },
+	                                                {"File": "branch.data", "Type": 2, "Count": 0, "Bucket": 3 }
                                             	]
                                             }`,
 										},
@@ -116,10 +159,10 @@ var testdir = &Node{
 											{
 												"Display": "basic",
 												"Info": [
-	                                                {"File": "push", "Type": 1, "Count": 2, "Bucket": 0 },
-	                                                {"File": "push", "Type": 2, "Count": 1, "Bucket": 1 },
-	                                                {"File": "commit", "Type": 1, "Count": 0, "Bucket": 2 },
-	                                                {"File": "commit", "Type": 2, "Count": 1, "Bucket": 3 }
+	                                                {"File": "push.data", "Type": 1, "Count": 2, "Bucket": 0 },
+	                                                {"File": "push.data", "Type": 2, "Count": 1, "Bucket": 1 },
+	                                                {"File": "commit.data", "Type": 1, "Count": 0, "Bucket": 2 },
+	                                                {"File": "commit.data", "Type": 2, "Count": 1, "Bucket": 3 }
 	                                            ]
                                            	}`,
 										},
@@ -171,45 +214,82 @@ var testdir = &Node{
 	},
 }
 
-func walkdir(n *Node, path string, f func(path string, n *Node)) {
-	f(path, n)
-	for _, e := range n.entries {
-		walkdir(e, filepath.Join(path, e.name), f)
-	}
-}
-
-func makedir(t *testing.T) {
-	walkdir(testdir, testdir.name, func(path string, n *Node) {
-		if n.entries == nil {
-			fd, err := os.Create(path)
-			if err != nil {
-				t.Errorf("makedir: %v", err)
-				return
-			}
-
-			if n.content != "" {
-				_, err := fd.Write([]byte(n.content))
-				if err != nil {
-					t.Errorf("write file: %v", err)
-				}
-			}
-			fd.Close()
-		} else {
-			os.Mkdir(path, 0770)
-		}
-	})
-}
-
-func usingTestdir(t *testing.T, f func()) {
-	// set up testdir
-	makedir(t)
-	// clean up testdir
-	defer func() {
-		if err := os.RemoveAll(testdir.name); err != nil {
-			t.Errorf("removedir: %v", err)
-		}
-	}()
-
-	// call test function
-	f()
+var nestedTestdir = &Node{
+	name: "testdata",
+	entries: []*Node{
+		{
+			name: "html",
+			entries: []*Node{
+				{name: "static", entries: []*Node{}},
+				{name: "index.html", entries: nil},
+				{
+					name: "decks",
+					entries: []*Node{
+						{
+							name: "facts",
+							entries: []*Node{
+								{
+									name: "ppc",
+									entries: []*Node{
+										{
+											name: "cards",
+											entries: []*Node{
+												{
+													name:    "add..data",
+													entries: nil,
+													content: `{"Word": "add.", "Image": "add.jpg", "Desc": "add. desc", "Hint": "add. hint", "Comp": "PowerPC instruction" }`,
+												},
+												{
+													name:    "branch.data",
+													entries: nil,
+													content: `{"Word": "branch", "Image": "branch.jpg", "Desc": "branch desc", "Hint": "branch hint", "Comp": "PowerPC instruction" }`,
+												},
+												{
+													name:    "cards.info",
+													entries: nil,
+													content: `
+											{
+												"Display": "basic",
+												"Info": [
+	                                                {"File": "add..data", "Type": 1, "Count": 7, "Bucket": 0 },
+	                                                {"File": "add..data", "Type": 2, "Count": 3, "Bucket": 1 },
+	                                                {"File": "branch.data", "Type": 1, "Count": 1, "Bucket": 2 },
+	                                                {"File": "branch.data", "Type": 2, "Count": 0, "Bucket": 3 }
+                                            	]
+                                            }`,
+												},
+											},
+										},
+										{
+											name:    "image",
+											entries: []*Node{},
+										},
+										{
+											name:    "tmpl",
+											entries: []*Node{},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+				{
+					name: "tmpl",
+					entries: []*Node{
+						{
+							name:    "thisdoesx.tmpl",
+							entries: nil,
+							content: `{{define "front"}}default thisdoesx{{end}}{{define "back"}}{{end}}`,
+						},
+						{
+							name:    "xdoesthis.tmpl",
+							entries: nil,
+							content: `{{define "front"}}default xdoesthis{{end}}{{define "back"}}{{end}}`,
+						},
+					},
+				},
+			},
+		},
+	},
 }

@@ -22,7 +22,7 @@ var (
 var (
 	g_env *env.Env
 	// TODO: examine if we can get rid of nextCardCh and make g_currCard a channel
-	g_currCard *core.Card
+	g_currCard core.Card
 	nextCardCh chan struct{}
 )
 
@@ -100,16 +100,16 @@ func usage() {
 
 // TODO: move or make a member of Deck?
 func saveDeck(deck *core.Deck) {
-	sets := map[string][]*core.Card{}
+	sets := map[string][]core.Card{}
 	for _, bucket := range deck {
 		for _, card := range bucket {
-			sets[card.Set] = append(sets[card.Set], card)
+			sets[card.Set()] = append(sets[card.Set()], card)
 		}
 	}
 
 	for set, cards := range sets {
 		// TODO: root of path should not be hardcoded
 		path := "html/decks/" + set + "/cards/cards.info"
-		builder.SaveDeck(path, cards[0].Display.Type(), cards)
+		builder.SaveDeck(path, cards[0].Type(), cards)
 	}
 }

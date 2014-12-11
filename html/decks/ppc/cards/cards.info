@@ -19,7 +19,7 @@
 			"File": "add..data",
 			"Set": "ppc",
 			"Type": 1,
-			"Count": 0,
+			"Count": 1,
 			"Bucket": 0
 		},
 		{
@@ -40,7 +40,7 @@
 			"File": "add.cr0.data",
 			"Set": "ppc",
 			"Type": 2,
-			"Count": 0,
+			"Count": 2,
 			"Bucket": 0
 		},
 		{
@@ -68,14 +68,14 @@
 			"File": "add.xer.data",
 			"Set": "ppc",
 			"Type": 2,
-			"Count": 0,
+			"Count": 3,
 			"Bucket": 0
 		},
 		{
 			"File": "addo-dot.data",
 			"Set": "ppc",
 			"Type": 1,
-			"Count": 0,
+			"Count": 2,
 			"Bucket": 0
 		},
 		{
@@ -89,7 +89,7 @@
 			"File": "addo.data",
 			"Set": "ppc",
 			"Type": 1,
-			"Count": 0,
+			"Count": 2,
 			"Bucket": 0
 		},
 		{
@@ -124,7 +124,7 @@
 			"File": "instr-o.data",
 			"Set": "ppc",
 			"Type": 2,
-			"Count": 0,
+			"Count": 1,
 			"Bucket": 0
 		}
 	]

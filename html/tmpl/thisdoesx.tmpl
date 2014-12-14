@@ -4,6 +4,6 @@
 
 {{define "back"}}
     <p><b>{{.Word}}</b></p>
-    <img src="/decks/{{.Set}}/image/{{.Image}}" height="150" width="150" />
+    <img class="card_image" src="/decks/{{.Set}}/image/{{.Image}}" />
     {{with .Hint}}<p>({{.}})</p>{{end}}
 {{end}}

@@ -6,6 +6,14 @@ PROJECT GOALS:
         ☐ more decks
     ☐ Platform to introduce users to Elder Brother Presents: The Guide Book
 
+Mobile Features:
+    ☐ Can download premade decks -- for low cost
+    ☐ Easy/Share to create your own decks
+        - ie, for romance, learning, or pranks
+    ☐ Intuitive and clean flashcard design.
+        - Swipe (a la tinder) to accept/forget card.
+        - Tap card to flip.  Each "numkey section" of the card flips it in diff way.
+    ☐ That's it -- no more features.
 
 Web Client:
     ☐ make history page
@@ -16,83 +24,42 @@ Web Client:
 
 Server:
     Features:
-                - allow user to create their own templates, don't need to recompile
-                - impl idea: load in tmpls, make an array of tmpl names, store tmpl name in card when creating them from .data file.
+        - allow user to create their own templates, don't need to recompile
+        - impl idea: load in tmpls, make an array of tmpl names, store tmpl name in card when creating them from .data file.
         ☐ store history
             ☐ some kind of json data file?
         ☐ Simplify card creation (GUI)
             ☐ submit page?
             ☐ check for duplicates
-        ☐ Save seems to be broken, investigate.
-        ☐ review/forgot seems to be broken, investigate
-        ☐ Store card info in display
+        ✔ Save seems to be broken, investigate. @done (14-12-12 22:06)
+        ✔ review/forgot seems to be broken, investigate @done (14-12-12 22:06)
+        ✔ Store card info in display @done (14-12-12 22:06)
             ☐ make info an interface
-                ☐ basic.Display will embed info struct, thus meet interface
-            ☐ No need for distinction between display and a card
-                ☐ Card is interface?
-                    type Card interface {
-                        Info
-                        Display
-                    }
+                ✔ basic.Display will embed info struct, thus meet interface @done (14-12-12 22:06)
+            ✔ No need for distinction between display and a card @done (14-12-12 22:06)
 
-                    type Info interface {
-                        File() string
-                        Set() string
-                        Type() int // used to serialize in from file
-                        Count() int
-                        Bucket() int
-                    }
-
-                    type Display interface {
-                        Name() synonymous with file
-                        Tmpl() string // Matches name in TmplMap
-                        CreateInfo(name string) []Info // This can become CreateCard
-
-                        // No longer needed:
-
-                        Type() string // Matches name in TmplMap
-                        SetTmpl(int) // int is Info type
-                        SetInfo
-                    }
-
-                    type CardInfo struct {
-                        //...
-                    }
-                    func (c *CardInfo) File() { return c.File }
-
-                    type basic.Card struct {
-                        CardInfo
-                        Word, Image, Desc, Hint, Comp string
-                    }
-
-                    b := basic.Card{
-                        Info: Info{file, set, ...},
-                        Word: add
-                        Desc: sums two registers...
-                        //...
-                    }
-
-                    func (c *Card) Name() { return c.File }
-                    func (c *Card) Tmpl() {
-                        switch c.Type() {
-                        case 1:
-                            return "thisdoesx"
-                        }
-                    }
-                    func CreateCards(name string) {
-
-                    }
     Open Questions:
         ☐ Android
     TODO:
+        ☐ Switch to  html/template
         ☐ Render template once, on load?
             ☐ Examine - amount of strings in memory (and startup cost) vs. cost of template execution
                 ☐ Solution - Limit size of deck
+                ☐ Solution - Generate webpage when we start with each individual card in it's own <div class="card"></div>.  Then store each card in js array and use server to pick which elem to display.  This saves on memory (don't need the card in the memory anymore) and saves on speed (no longer rendering templates on load). Still limit size of deck.
         ☐ Limit size of deck
+        ☐ Break down (and test) deck builder into components
+            type deckloader interface {
+                LoadDeck()
+                SaveDeck()
+            }
+
+            type templateloader {
+                LoadTemplates()
+            }
         ☐ WRITE UNIT TESTS!!
         ☐ Error Handle
         ☐ clean TODOs
-        ☐ Make Books deck and display
+        ✔ Make Books deck and display @done (14-12-12 22:11)
 
 Facts:
     ☐ learn Minimal PPC Instr Set

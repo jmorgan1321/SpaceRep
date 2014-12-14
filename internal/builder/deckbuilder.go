@@ -11,10 +11,35 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/jmorgan1321/SpaceRep/displays/basic"
 	"github.com/jmorgan1321/SpaceRep/displays/factory"
 	"github.com/jmorgan1321/SpaceRep/internal/core"
 )
+
+// type Builder interface {
+// 	deckLoader
+// 	tmplLoader
+// }
+
+type Builder struct {
+	dir  string   // if dir != "" then 'html' dir is located (from root) in dir
+	deck string   // if != "all" then load try to load that specific deck
+	ex   []string // decks to ignore
+}
+
+// TODO: unexport
+type option func(*Builder)
+
+func New(opts ...option) *Builder {
+	bldr := &Builder{
+		deck: "all",
+	}
+
+	for _, opt := range opts {
+		opt(bldr)
+	}
+
+	return bldr
+}
 
 func (b *Builder) rootPath() string {
 	path := ""
@@ -211,14 +236,6 @@ func getCardTemplatesFromDisk(path, cardType string) ([]CardHolder, error) {
 	return alldata, nil
 }
 
-func TempDFE(c core.Card, i core.Info) ([]core.Card, error) {
-	switch c.Type() {
-	case "basic":
-		return basic.CreateCardsFromTemplate(c, i), nil
-	}
-	return nil, errors.New("unknown display type passed in: " + c.Type())
-}
-
 type CardHolder struct {
 	File string
 	Card core.Card
@@ -228,7 +245,7 @@ func makeCards(set string, info []*core.Info, hldr []CardHolder) []core.Card {
 	// throw the info's in a map
 	fileMap := map[string]bool{}
 	for _, i := range info {
-		i.Set = set
+		i.S = set
 		fileMap[i.File] = false
 	}
 
@@ -242,7 +259,7 @@ func makeCards(set string, info []*core.Info, hldr []CardHolder) []core.Card {
 		if _, found := fileMap[h.File]; found {
 			fileMap[h.File] = true
 		} else {
-			nc, _ := TempDFE(d, core.Info{File: h.File, Set: set})
+			nc, _ := factory.MakeCards(d, core.Info{File: h.File, S: set})
 			cards = append(cards, nc...)
 		}
 	}
@@ -294,7 +311,7 @@ func SaveDeck(path, display string, cards []core.Card) {
 	info := []*core.Info{}
 	for _, c := range cards {
 		// TODO: remove hard coded
-		info = append(info, c.(*basic.Card).Info)
+		info = append(info, c.Stats())
 	}
 
 	d := deckInfo{Display: display, Info: info}

@@ -62,6 +62,11 @@ div {
   font-size: 2em;
 }
 
+.card_image {
+  height: 150px;
+  width: 150px;
+}
+
 b {
     color: blue;
 }

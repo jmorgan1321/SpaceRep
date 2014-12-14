@@ -1,0 +1,12 @@
+{
+	"Display": "book",
+	"Info": [
+		{
+			"File": "PowerOfHabit.data",
+			"Set": "books",
+			"Type": 1,
+			"Count": 0,
+			"Bucket": 0
+		}
+	]
+}

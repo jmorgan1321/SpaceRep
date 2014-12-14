@@ -29,38 +29,41 @@ func init() {
 }
 
 type Card interface {
+	// Display
 	Type() string
 	Name() string
-
 	Clone(Info) Card
-
-	Bucket() Bucket
-	UpdateBucket()
-
-	Set() string
 	Tmpl() string
 
+	// Info
+	Bucket() Bucket
+	UpdateBucket()
+	Set() string
 	Stats() *Info
 }
 
 type Info struct {
-	File, Set string
-	Type      int
-	Count     int
-	Bucket    Bucket
+	File  string
+	S     string `json:"Set"`
+	Type  int
+	Count int
+	B     Bucket `json:"Bucket"`
 }
 
-func (i *Info) GetBucket() Bucket {
-	return i.Bucket
+func (i *Info) Set() string {
+	return i.S
+}
+func (i *Info) Bucket() Bucket {
+	return i.B
 }
 func (i *Info) UpdateBucket() {
-	if i.Count >= i.Bucket.GetMaxCount() {
+	if i.Count >= i.B.GetMaxCount() {
 		i.Count = 0
-		i.Bucket = i.Bucket.NextBucket()
+		i.B = i.B.NextBucket()
 	}
 	if i.Count < 0 {
 		i.Count = 0
-		i.Bucket = i.Bucket.PrevBucket()
+		i.B = i.B.PrevBucket()
 	}
 }
 func (i *Info) IncCount() {
@@ -68,6 +71,9 @@ func (i *Info) IncCount() {
 }
 func (i *Info) DecCount() {
 	i.Count--
+}
+func (i *Info) Stats() *Info {
+	return i
 }
 
 func Render(s ScopeTmplMap, c Card) (string, error) {

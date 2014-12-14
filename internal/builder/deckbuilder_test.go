@@ -18,7 +18,7 @@ import (
 func checkCard(t *testing.T, i int, exp, act core.Card) {
 	checkDisplay(t, i, exp.(*basic.Card), act.(*basic.Card))
 	// TODO: fix
-	checkInfo(t, i, exp.(*basic.Card).Info, act.(*basic.Card).Info)
+	checkInfo(t, i, &exp.(*basic.Card).Info, &act.(*basic.Card).Info)
 }
 
 func checkDisplay(t *testing.T, i int, exp, act *basic.Card) {
@@ -30,11 +30,11 @@ func checkDisplay(t *testing.T, i int, exp, act *basic.Card) {
 }
 
 func checkInfo(t *testing.T, i int, exp, act *core.Info) {
-	test.ExpectEQ(t, exp.Set, act.Set, "card %d: Set match", i)
+	test.ExpectEQ(t, exp.S, act.S, "card %d: Set match", i)
 	test.ExpectEQ(t, exp.File, act.File, "card %d: Filenames match", i)
 	test.ExpectEQ(t, exp.Type, act.Type, "card %d: Type match", i)
 	test.ExpectEQ(t, exp.Count, act.Count, "card %d: Count match", i)
-	test.ExpectEQ(t, exp.Bucket, act.Bucket, "card %d: Bucket match", i)
+	test.ExpectEQ(t, exp.B, act.B, "card %d: Bucket match", i)
 }
 
 // TESTS
@@ -48,7 +48,7 @@ func TestLoadDeck_Specific(t *testing.T) {
 				Desc:  "add. desc",
 				Hint:  "add. hint",
 				Comp:  "PowerPC instruction",
-				Info:  &core.Info{Set: "ppc", File: "add..data", Type: 1, Count: 7, Bucket: 0},
+				Info:  core.Info{S: "ppc", File: "add..data", Type: 1, Count: 7, B: 0},
 			},
 			&basic.Card{
 				Word:  "add.",
@@ -56,7 +56,7 @@ func TestLoadDeck_Specific(t *testing.T) {
 				Desc:  "add. desc",
 				Hint:  "add. hint",
 				Comp:  "PowerPC instruction",
-				Info:  &core.Info{Set: "ppc", File: "add..data", Type: 2, Count: 3, Bucket: 1},
+				Info:  core.Info{S: "ppc", File: "add..data", Type: 2, Count: 3, B: 1},
 			},
 			&basic.Card{
 				Word:  "branch",
@@ -64,7 +64,7 @@ func TestLoadDeck_Specific(t *testing.T) {
 				Desc:  "branch desc",
 				Hint:  "branch hint",
 				Comp:  "PowerPC instruction",
-				Info:  &core.Info{Set: "ppc", File: "branch.data", Type: 1, Count: 1, Bucket: 2},
+				Info:  core.Info{S: "ppc", File: "branch.data", Type: 1, Count: 1, B: 2},
 			},
 			&basic.Card{
 				Word:  "branch",
@@ -72,7 +72,7 @@ func TestLoadDeck_Specific(t *testing.T) {
 				Desc:  "branch desc",
 				Hint:  "branch hint",
 				Comp:  "PowerPC instruction",
-				Info:  &core.Info{Set: "ppc", File: "branch.data", Type: 2, Count: 0, Bucket: 3},
+				Info:  core.Info{S: "ppc", File: "branch.data", Type: 2, Count: 0, B: 3},
 			},
 		}
 
@@ -104,7 +104,7 @@ func TestMultipleDecksCanBeLoaded(t *testing.T) {
 				Desc:  "push desc",
 				Hint:  "push hint",
 				Comp:  "git command",
-				Info:  &core.Info{Set: "git", File: "push.data", Type: 1, Count: 2, Bucket: 0},
+				Info:  core.Info{S: "git", File: "push.data", Type: 1, Count: 2, B: 0},
 			},
 			&basic.Card{
 				Word:  "add.",
@@ -112,7 +112,7 @@ func TestMultipleDecksCanBeLoaded(t *testing.T) {
 				Desc:  "add. desc",
 				Hint:  "add. hint",
 				Comp:  "PowerPC instruction",
-				Info:  &core.Info{Set: "ppc", File: "add..data", Type: 1, Count: 7, Bucket: 0},
+				Info:  core.Info{S: "ppc", File: "add..data", Type: 1, Count: 7, B: 0},
 			},
 			&basic.Card{
 				Word:  "push",
@@ -120,7 +120,7 @@ func TestMultipleDecksCanBeLoaded(t *testing.T) {
 				Desc:  "push desc",
 				Hint:  "push hint",
 				Comp:  "git command",
-				Info:  &core.Info{Set: "git", File: "push.data", Type: 2, Count: 1, Bucket: 1},
+				Info:  core.Info{S: "git", File: "push.data", Type: 2, Count: 1, B: 1},
 			},
 			&basic.Card{
 				Word:  "add.",
@@ -128,7 +128,7 @@ func TestMultipleDecksCanBeLoaded(t *testing.T) {
 				Desc:  "add. desc",
 				Hint:  "add. hint",
 				Comp:  "PowerPC instruction",
-				Info:  &core.Info{Set: "ppc", File: "add..data", Type: 2, Count: 3, Bucket: 1},
+				Info:  core.Info{S: "ppc", File: "add..data", Type: 2, Count: 3, B: 1},
 			},
 			&basic.Card{
 				Word:  "commit",
@@ -136,7 +136,7 @@ func TestMultipleDecksCanBeLoaded(t *testing.T) {
 				Desc:  "commit desc",
 				Hint:  "commit hint",
 				Comp:  "git command",
-				Info:  &core.Info{Set: "git", File: "commit.data", Type: 1, Count: 0, Bucket: 2},
+				Info:  core.Info{S: "git", File: "commit.data", Type: 1, Count: 0, B: 2},
 			},
 			&basic.Card{
 				Word:  "branch",
@@ -144,7 +144,7 @@ func TestMultipleDecksCanBeLoaded(t *testing.T) {
 				Desc:  "branch desc",
 				Hint:  "branch hint",
 				Comp:  "PowerPC instruction",
-				Info:  &core.Info{Set: "ppc", File: "branch.data", Type: 1, Count: 1, Bucket: 2},
+				Info:  core.Info{S: "ppc", File: "branch.data", Type: 1, Count: 1, B: 2},
 			},
 			&basic.Card{
 				Word:  "commit",
@@ -152,7 +152,7 @@ func TestMultipleDecksCanBeLoaded(t *testing.T) {
 				Desc:  "commit desc",
 				Hint:  "commit hint",
 				Comp:  "git command",
-				Info:  &core.Info{Set: "git", File: "commit.data", Type: 2, Count: 0, Bucket: 3},
+				Info:  core.Info{S: "git", File: "commit.data", Type: 2, Count: 0, B: 3},
 			},
 			&basic.Card{
 				Word:  "branch",
@@ -160,7 +160,7 @@ func TestMultipleDecksCanBeLoaded(t *testing.T) {
 				Desc:  "branch desc",
 				Hint:  "branch hint",
 				Comp:  "PowerPC instruction",
-				Info:  &core.Info{Set: "ppc", File: "branch.data", Type: 2, Count: 0, Bucket: 3},
+				Info:  core.Info{S: "ppc", File: "branch.data", Type: 2, Count: 0, B: 3},
 			},
 		}
 
@@ -201,7 +201,7 @@ func TestLoadDeck_DecksCanHaveSubPaths(t *testing.T) {
 				Desc:  "add. desc",
 				Hint:  "add. hint",
 				Comp:  "PowerPC instruction",
-				Info:  &core.Info{Set: "facts\\ppc", File: "add..data", Type: 1, Count: 7, Bucket: 0},
+				Info:  core.Info{S: "facts\\ppc", File: "add..data", Type: 1, Count: 7, B: 0},
 			},
 			&basic.Card{
 				Word:  "add.",
@@ -209,7 +209,7 @@ func TestLoadDeck_DecksCanHaveSubPaths(t *testing.T) {
 				Desc:  "add. desc",
 				Hint:  "add. hint",
 				Comp:  "PowerPC instruction",
-				Info:  &core.Info{Set: "facts\\ppc", File: "add..data", Type: 2, Count: 3, Bucket: 1},
+				Info:  core.Info{S: "facts\\ppc", File: "add..data", Type: 2, Count: 3, B: 1},
 			},
 			&basic.Card{
 				Word:  "branch",
@@ -217,7 +217,7 @@ func TestLoadDeck_DecksCanHaveSubPaths(t *testing.T) {
 				Desc:  "branch desc",
 				Hint:  "branch hint",
 				Comp:  "PowerPC instruction",
-				Info:  &core.Info{Set: "facts\\ppc", File: "branch.data", Type: 1, Count: 1, Bucket: 2},
+				Info:  core.Info{S: "facts\\ppc", File: "branch.data", Type: 1, Count: 1, B: 2},
 			},
 			&basic.Card{
 				Word:  "branch",
@@ -225,7 +225,7 @@ func TestLoadDeck_DecksCanHaveSubPaths(t *testing.T) {
 				Desc:  "branch desc",
 				Hint:  "branch hint",
 				Comp:  "PowerPC instruction",
-				Info:  &core.Info{Set: "facts\\ppc", File: "branch.data", Type: 2, Count: 0, Bucket: 3},
+				Info:  core.Info{S: "facts\\ppc", File: "branch.data", Type: 2, Count: 0, B: 3},
 			},
 		}
 
@@ -257,7 +257,7 @@ func TestLoadDeck_SubPaths_All(t *testing.T) {
 				Desc:  "add. desc",
 				Hint:  "add. hint",
 				Comp:  "PowerPC instruction",
-				Info:  &core.Info{Set: "facts\\ppc", File: "add..data", Type: 1, Count: 7, Bucket: 0},
+				Info:  core.Info{S: "facts\\ppc", File: "add..data", Type: 1, Count: 7, B: 0},
 			},
 			&basic.Card{
 				Word:  "add.",
@@ -265,7 +265,7 @@ func TestLoadDeck_SubPaths_All(t *testing.T) {
 				Desc:  "add. desc",
 				Hint:  "add. hint",
 				Comp:  "PowerPC instruction",
-				Info:  &core.Info{Set: "facts\\ppc", File: "add..data", Type: 2, Count: 3, Bucket: 1},
+				Info:  core.Info{S: "facts\\ppc", File: "add..data", Type: 2, Count: 3, B: 1},
 			},
 			&basic.Card{
 				Word:  "branch",
@@ -273,7 +273,7 @@ func TestLoadDeck_SubPaths_All(t *testing.T) {
 				Desc:  "branch desc",
 				Hint:  "branch hint",
 				Comp:  "PowerPC instruction",
-				Info:  &core.Info{Set: "facts\\ppc", File: "branch.data", Type: 1, Count: 1, Bucket: 2},
+				Info:  core.Info{S: "facts\\ppc", File: "branch.data", Type: 1, Count: 1, B: 2},
 			},
 			&basic.Card{
 				Word:  "branch",
@@ -281,7 +281,7 @@ func TestLoadDeck_SubPaths_All(t *testing.T) {
 				Desc:  "branch desc",
 				Hint:  "branch hint",
 				Comp:  "PowerPC instruction",
-				Info:  &core.Info{Set: "facts\\ppc", File: "branch.data", Type: 2, Count: 0, Bucket: 3},
+				Info:  core.Info{S: "facts\\ppc", File: "branch.data", Type: 2, Count: 0, B: 3},
 			},
 		}
 
@@ -312,7 +312,7 @@ func TestLoadDeck_DecksCanBeExcludedFromLoading(t *testing.T) {
 				Desc:  "add. desc",
 				Hint:  "add. hint",
 				Comp:  "PowerPC instruction",
-				Info:  &core.Info{Set: "ppc", File: "add..data", Type: 1, Count: 7, Bucket: 0},
+				Info:  core.Info{S: "ppc", File: "add..data", Type: 1, Count: 7, B: 0},
 			},
 			&basic.Card{
 				Word:  "add.",
@@ -320,7 +320,7 @@ func TestLoadDeck_DecksCanBeExcludedFromLoading(t *testing.T) {
 				Desc:  "add. desc",
 				Hint:  "add. hint",
 				Comp:  "PowerPC instruction",
-				Info:  &core.Info{Set: "ppc", File: "add..data", Type: 2, Count: 3, Bucket: 1},
+				Info:  core.Info{S: "ppc", File: "add..data", Type: 2, Count: 3, B: 1},
 			},
 			&basic.Card{
 				Word:  "branch",
@@ -328,7 +328,7 @@ func TestLoadDeck_DecksCanBeExcludedFromLoading(t *testing.T) {
 				Desc:  "branch desc",
 				Hint:  "branch hint",
 				Comp:  "PowerPC instruction",
-				Info:  &core.Info{Set: "ppc", File: "branch.data", Type: 1, Count: 1, Bucket: 2},
+				Info:  core.Info{S: "ppc", File: "branch.data", Type: 1, Count: 1, B: 2},
 			},
 			&basic.Card{
 				Word:  "branch",
@@ -336,7 +336,7 @@ func TestLoadDeck_DecksCanBeExcludedFromLoading(t *testing.T) {
 				Desc:  "branch desc",
 				Hint:  "branch hint",
 				Comp:  "PowerPC instruction",
-				Info:  &core.Info{Set: "ppc", File: "branch.data", Type: 2, Count: 0, Bucket: 3},
+				Info:  core.Info{S: "ppc", File: "branch.data", Type: 2, Count: 0, B: 3},
 			},
 		}
 
@@ -412,15 +412,15 @@ func Test_getDeckInfo(t *testing.T) {
 	            "File": "add.",
 	            "Type": 1,
 	            "Count": 0,
-	            "Bucket": 0,
+	            "Bucket": 3,
 	            "FirstSeen": "0001-01-01T00:00:00Z",
 	            "LastSeen": "0001-01-01T00:00:00Z"
 	        },
 	        {
 	            "File": "add.",
 	            "Type": 2,
-	            "Count": 0,
-	            "Bucket": 0,
+	            "Count": 2,
+	            "Bucket": 1,
 	            "FirstSeen": "0001-01-01T00:00:00Z",
 	            "LastSeen": "0001-01-01T00:00:00Z"
 	        }
@@ -433,8 +433,8 @@ func Test_getDeckInfo(t *testing.T) {
 	exp := deckInfo{
 		Display: "my-display",
 		Info: []*core.Info{
-			&core.Info{File: "add.", Type: 1, Count: 0, Bucket: 0},
-			&core.Info{File: "add.", Type: 2, Count: 0, Bucket: 0},
+			&core.Info{File: "add.", Type: 1, Count: 0, B: core.Yearly},
+			&core.Info{File: "add.", Type: 2, Count: 2, B: core.Weekly},
 		},
 	}
 
@@ -478,27 +478,27 @@ func Test_getCardTemplatesFromDisk(t *testing.T) {
 // 				&basic.Display{Word: "branch", Image: "branch.jpg", Desc: "branch desc", Hint: "branch hint", Comp: "PowerPC instruction"},
 // 			},
 // 			info: []*core.Info{
-// 				&core.Info{Set: "ppc", File: "add.", Type: 1, Count: 7, Bucket: 0},
-// 				&core.Info{Set: "ppc", File: "add.", Type: 2, Count: 3, Bucket: 1},
-// 				&core.Info{Set: "ppc", File: "branch", Type: 1, Count: 1, Bucket: 2},
-// 				&core.Info{Set: "ppc", File: "branch", Type: 2, Count: 0, Bucket: 3},
+// 				core.Info{S: "ppc", File: "add.", Type: 1, Count: 7, B: 0},
+// 				core.Info{S: "ppc", File: "add.", Type: 2, Count: 3, B: 1},
+// 				core.Info{S: "ppc", File: "branch", Type: 1, Count: 1, B: 2},
+// 				core.Info{S: "ppc", File: "branch", Type: 2, Count: 0, B: 3},
 // 			},
 // 			exp: []*core.Card{
 // 				&core.Card{
 // 					Display: &basic.Display{Word: "add.", Image: "add.jpg", Desc: "add. desc", Hint: "add. hint", Comp: "PowerPC instruction"},
-// 					Info:    core.Info{Set: "ppc", File: "add.", Type: 1, Count: 7, Bucket: 0},
+// 					Info:    core.Info{S: "ppc", File: "add.", Type: 1, Count: 7, B: 0},
 // 				},
 // 				&core.Card{
 // 					Display: &basic.Display{Word: "add.", Image: "add.jpg", Desc: "add. desc", Hint: "add. hint", Comp: "PowerPC instruction"},
-// 					Info:    core.Info{Set: "ppc", File: "add.", Type: 2, Count: 3, Bucket: 1},
+// 					Info:    core.Info{S: "ppc", File: "add.", Type: 2, Count: 3, B: 1},
 // 				},
 // 				&core.Card{
 // 					Display: &basic.Display{Word: "branch", Image: "branch.jpg", Desc: "branch desc", Hint: "branch hint", Comp: "PowerPC instruction"},
-// 					Info:    core.Info{Set: "ppc", File: "branch", Type: 1, Count: 1, Bucket: 2},
+// 					Info:    core.Info{S: "ppc", File: "branch", Type: 1, Count: 1, B: 2},
 // 				},
 // 				&core.Card{
 // 					Display: &basic.Display{Word: "branch", Image: "branch.jpg", Desc: "branch desc", Hint: "branch hint", Comp: "PowerPC instruction"},
-// 					Info:    core.Info{Set: "ppc", File: "branch", Type: 2, Count: 0, Bucket: 3},
+// 					Info:    core.Info{S: "ppc", File: "branch", Type: 2, Count: 0, B: 3},
 // 				},
 // 			},
 // 		},
@@ -508,19 +508,19 @@ func Test_getCardTemplatesFromDisk(t *testing.T) {
 // 				&basic.Display{Word: "add.", Image: "add.jpg", Desc: "add. desc", Hint: "add. hint", Comp: "PowerPC instruction"},
 // 			},
 // 			info: []*core.Info{
-// 				&core.Info{Set: "ppc", File: "add.", Type: 1, Count: 7, Bucket: 0},
-// 				&core.Info{Set: "ppc", File: "add.", Type: 2, Count: 3, Bucket: 1},
-// 				&core.Info{Set: "ppc", File: "branch", Type: 1, Count: 1, Bucket: 2},
-// 				&core.Info{Set: "ppc", File: "branch", Type: 2, Count: 0, Bucket: 3},
+// 				core.Info{S: "ppc", File: "add.", Type: 1, Count: 7, B: 0},
+// 				core.Info{S: "ppc", File: "add.", Type: 2, Count: 3, B: 1},
+// 				core.Info{S: "ppc", File: "branch", Type: 1, Count: 1, B: 2},
+// 				core.Info{S: "ppc", File: "branch", Type: 2, Count: 0, B: 3},
 // 			},
 // 			exp: []*core.Card{
 // 				&core.Card{
 // 					Display: &basic.Display{Word: "add.", Image: "add.jpg", Desc: "add. desc", Hint: "add. hint", Comp: "PowerPC instruction"},
-// 					Info:    core.Info{Set: "ppc", File: "add.", Type: 1, Count: 7, Bucket: 0},
+// 					Info:    core.Info{S: "ppc", File: "add.", Type: 1, Count: 7, B: 0},
 // 				},
 // 				&core.Card{
 // 					Display: &basic.Display{Word: "add.", Image: "add.jpg", Desc: "add. desc", Hint: "add. hint", Comp: "PowerPC instruction"},
-// 					Info:    core.Info{Set: "ppc", File: "add.", Type: 2, Count: 3, Bucket: 1},
+// 					Info:    core.Info{S: "ppc", File: "add.", Type: 2, Count: 3, B: 1},
 // 				},
 // 			},
 // 		},
@@ -531,25 +531,25 @@ func Test_getCardTemplatesFromDisk(t *testing.T) {
 // 				&basic.Display{Word: "branch", Image: "branch.jpg", Desc: "branch desc", Hint: "branch hint", Comp: "PowerPC instruction"},
 // 			},
 // 			info: []*core.Info{
-// 				&core.Info{Set: "ppc", File: "branch", Type: 1, Count: 1, Bucket: 2},
-// 				&core.Info{Set: "ppc", File: "branch", Type: 2, Count: 0, Bucket: 3},
+// 				core.Info{S: "ppc", File: "branch", Type: 1, Count: 1, B: 2},
+// 				core.Info{S: "ppc", File: "branch", Type: 2, Count: 0, B: 3},
 // 			},
 // 			exp: []*core.Card{
 // 				&core.Card{
 // 					Display: &basic.Display{Word: "cmp", Image: "cmp.jpg", Desc: "cmp desc", Hint: "cmp hint", Comp: "PowerPC instruction"},
-// 					Info:    core.Info{Set: "ppc", File: "cmp", Type: 1, Count: 0, Bucket: 0},
+// 					Info:    core.Info{S: "ppc", File: "cmp", Type: 1, Count: 0, B: 0},
 // 				},
 // 				&core.Card{
 // 					Display: &basic.Display{Word: "cmp", Image: "cmp.jpg", Desc: "cmp desc", Hint: "cmp hint", Comp: "PowerPC instruction"},
-// 					Info:    core.Info{Set: "ppc", File: "cmp", Type: 2, Count: 0, Bucket: 0},
+// 					Info:    core.Info{S: "ppc", File: "cmp", Type: 2, Count: 0, B: 0},
 // 				},
 // 				&core.Card{
 // 					Display: &basic.Display{Word: "branch", Image: "branch.jpg", Desc: "branch desc", Hint: "branch hint", Comp: "PowerPC instruction"},
-// 					Info:    core.Info{Set: "ppc", File: "branch", Type: 1, Count: 1, Bucket: 2},
+// 					Info:    core.Info{S: "ppc", File: "branch", Type: 1, Count: 1, B: 2},
 // 				},
 // 				&core.Card{
 // 					Display: &basic.Display{Word: "branch", Image: "branch.jpg", Desc: "branch desc", Hint: "branch hint", Comp: "PowerPC instruction"},
-// 					Info:    core.Info{Set: "ppc", File: "branch", Type: 2, Count: 0, Bucket: 3},
+// 					Info:    core.Info{S: "ppc", File: "branch", Type: 2, Count: 0, B: 3},
 // 				},
 // 			},
 // 		},
@@ -575,16 +575,16 @@ func Test_getCardTemplatesFromDisk(t *testing.T) {
 // 	}{
 // 		{
 // 			in: []*core.Card{
-// 				&core.Card{Info: core.Info{Count: 8, Bucket: 0}},
-// 				&core.Card{Info: core.Info{Count: 4, Bucket: 1}},
-// 				&core.Card{Info: core.Info{Count: 1, Bucket: 2}},
-// 				&core.Card{Info: core.Info{Count: -1, Bucket: 3}},
+// 				&core.Card{Info: core.Info{Count: 8, B: 0}},
+// 				&core.Card{Info: core.Info{Count: 4, B: 1}},
+// 				&core.Card{Info: core.Info{Count: 1, B: 2}},
+// 				&core.Card{Info: core.Info{Count: -1, B: 3}},
 // 			},
 // 			exp: []*core.Card{
-// 				&core.Card{Info: core.Info{Count: 0, Bucket: 1}},
-// 				&core.Card{Info: core.Info{Count: 0, Bucket: 2}},
-// 				&core.Card{Info: core.Info{Count: 1, Bucket: 2}},
-// 				&core.Card{Info: core.Info{Count: 0, Bucket: 2}},
+// 				&core.Card{Info: core.Info{Count: 0, B: 1}},
+// 				&core.Card{Info: core.Info{Count: 0, B: 2}},
+// 				&core.Card{Info: core.Info{Count: 1, B: 2}},
+// 				&core.Card{Info: core.Info{Count: 0, B: 2}},
 // 			},
 // 		},
 // 	}
@@ -717,12 +717,12 @@ func TestCardRender(t *testing.T) {
 		exp string
 	}{
 		{
-			c:   &basic.Card{Info: &core.Info{Set: "ppc", Type: 1}},
+			c:   &basic.Card{Info: core.Info{S: "ppc", Type: 1}},
 			exp: "local this does x",
 		},
 
 		{
-			c:   &basic.Card{Info: &core.Info{Set: "ppc", Type: 2}},
+			c:   &basic.Card{Info: core.Info{S: "ppc", Type: 2}},
 			exp: "default x does that",
 		},
 	}

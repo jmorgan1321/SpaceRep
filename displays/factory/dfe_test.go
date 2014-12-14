@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/jmorgan1321/SpaceRep/displays/basic"
+	"github.com/jmorgan1321/SpaceRep/displays/book"
 	"github.com/jmorgan1321/SpaceRep/internal/core"
 	"github.com/jmorgan1321/SpaceRep/internal/test"
 )
@@ -12,11 +13,12 @@ import (
 func TestDFE(t *testing.T) {
 	tests := []struct {
 		in  string
-		out core.Display
+		out core.Card
 		err error
 	}{
-		{in: "basic", out: &basic.Display{}},
-		{in: "unknown", err: errors.New("unknown display type passed in: unknown")},
+		{in: "unknown", err: errors.New("unknown card type passed in: unknown")},
+		{in: "basic", out: &basic.Card{}},
+		{in: "book", out: &book.Card{}},
 	}
 
 	for i, tt := range tests {

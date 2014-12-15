@@ -1,0 +1,7 @@
+{
+    "Word": "ld",
+    "Image": "load_symbol.jpg",
+    "Desc": "loads symbols for a module or all modules",
+    "Comp": "windbg command",
+    "Hint": "ld <Modulename|*>"
+}

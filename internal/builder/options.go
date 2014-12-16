@@ -20,7 +20,7 @@ func dir(s string) option {
 // when loading.  If a name ends with a trailing slash, all sub d
 // directories will be excluded.
 //
-// Ex: "git, ppc, facts/" would ignore the git, ppc, and any deck
+// Ex: "git,ppc,facts/" would ignore the git, ppc, and any deck
 // under facts.
 //
 func Exclude(s string) option {

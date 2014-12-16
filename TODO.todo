@@ -41,6 +41,10 @@ Server:
     Open Questions:
         ☐ Android
     TODO:
+        ☐ Add principles card
+            type Principle struct {
+                Principle, Image, Source, Desc string
+            }
         ☐ Switch to  html/template
         ☐ Render template once, on load?
             ☐ Examine - amount of strings in memory (and startup cost) vs. cost of template execution

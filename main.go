@@ -17,6 +17,7 @@ var (
 	set     = flag.String("deck", "all", "which deck(s) to load cards from")
 	browser = flag.Bool("browser", false, "attempt to open a browser")
 	port    = flag.String("port", ":8080", "which port to run card server on")
+	exclude = flag.String("exclude", "finance", "comma separated list of decks to skip")
 )
 
 var (
@@ -38,6 +39,7 @@ func main() {
 
 	deck, err := builder.New(
 		builder.Deck(*set),
+		builder.Exclude(*exclude),
 	).LoadDeck()
 
 	if err != nil {

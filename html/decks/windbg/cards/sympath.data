@@ -1,0 +1,7 @@
+{
+    "Word": ".sympath",
+    "Image": "path.jpg",
+    "Desc": "either displays or sets symbol search path or appends dir to previous symbol path",
+    "Comp": "windbg command",
+    "Hint": "sympath [search path] | sympath+"
+}

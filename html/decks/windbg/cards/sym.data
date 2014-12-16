@@ -1,0 +1,7 @@
+{
+    "Word": "!sym",
+    "Image": "search_symbol.png",
+    "Desc": "displays state of symbol loading and can be set to display symbol search info",
+    "Comp": "windbg command",
+    "Hint": "!sym [noisy|quiet]"
+}

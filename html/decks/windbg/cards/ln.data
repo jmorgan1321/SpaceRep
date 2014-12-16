@@ -1,0 +1,7 @@
+{
+    "Word": "ln",
+    "Image": near.jpg",
+    "Desc": "lists the nearest symbols to a given address",
+    "Comp": "windbg command",
+    "Hint": "ln addr"
+}

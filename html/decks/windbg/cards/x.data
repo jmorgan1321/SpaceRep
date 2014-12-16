@@ -1,0 +1,7 @@
+{
+    "Word": "x",
+    "Image": "xray.jpg",
+    "Desc": "displays symbols that match a pattern and can display info by type, verbosely, or sorted by address, name, or size",
+    "Comp": "windbg command",
+    "Hint": "x [/t|/v|/a|/n|/z] Module!Symbol"
+}

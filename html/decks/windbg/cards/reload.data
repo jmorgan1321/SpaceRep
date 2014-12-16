@@ -1,0 +1,7 @@
+{
+    "Word": ".reload",
+    "Image": "reload.jpg",
+    "Desc": "lets the debugger know that symbol info may have changed and can, optionally, force reload of sym info for a all or a specifc module",
+    "Comp": "windbg command",
+    "Hint": ".reload [/f|/v] | .reload [/f|/v] Module"
+}

@@ -1,0 +1,19 @@
+{
+	"Display": "basic",
+	"Info": [
+		{
+			"File": "PpcTestFramework.data",
+			"Set": "work\\precl",
+			"Type": 1,
+			"Count": 0,
+			"Bucket": 0
+		},
+		{
+			"File": "PpcTestFramework.data",
+			"Set": "work\\precl",
+			"Type": 2,
+			"Count": 0,
+			"Bucket": 0
+		}
+	]
+}

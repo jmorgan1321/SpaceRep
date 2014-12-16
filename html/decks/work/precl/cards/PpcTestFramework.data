@@ -1,0 +1,7 @@
+{
+    "Word": "PPC Test Framework",
+    "Image": "PpcTestFramework.png",
+    "Desc": "(1) gens tests, (2) runs test on xb1 to capture reg state, (3) runs test precl bits and cmps results",
+    "Comp": "precl component",
+    "Hint": ""
+}

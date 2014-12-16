@@ -1,0 +1,7 @@
+{
+    "Word": "!lmi",
+    "Image": "list_plus.png",
+    "Desc": "lists additional module info",
+    "Comp": "windbg command",
+    "Hint": "!lmi <module name or address>"
+}

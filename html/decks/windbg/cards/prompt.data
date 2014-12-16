@@ -1,0 +1,7 @@
+{
+    "Word": "prompt",
+    "Image": "prompt.jpg",
+    "Desc": "displays if the user is in kernel or user mode and which CPU is being debugged ",
+    "Comp": "windbg ui element",
+    "Hint": "n:kd> | 0:0:000"
+}

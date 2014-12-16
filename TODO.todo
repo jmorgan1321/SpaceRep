@@ -41,10 +41,13 @@ Server:
     Open Questions:
         ☐ Android
     TODO:
+        ☐ Error on bad json load
+        ☐ make debug build that dumps card html
         ☐ Add principles card
             type Principle struct {
                 Principle, Image, Source, Desc string
             }
+        ☐ Remove "Set" from card info, test it
         ☐ Switch to  html/template
         ☐ Render template once, on load?
             ☐ Examine - amount of strings in memory (and startup cost) vs. cost of template execution

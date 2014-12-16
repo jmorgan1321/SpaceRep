@@ -1,3 +1,131 @@
 {
-    "Display": "basic"
+	"Display": "basic",
+	"Info": [
+		{
+			"File": "lm.data",
+			"Set": "windbg",
+			"Type": 1,
+			"Count": 0,
+			"Bucket": 0
+		},
+		{
+			"File": "lm.data",
+			"Set": "windbg",
+			"Type": 2,
+			"Count": 0,
+			"Bucket": 0
+		},
+		{
+			"File": "lmi.data",
+			"Set": "windbg",
+			"Type": 1,
+			"Count": 0,
+			"Bucket": 0
+		},
+		{
+			"File": "lmi.data",
+			"Set": "windbg",
+			"Type": 2,
+			"Count": 0,
+			"Bucket": 0
+		},
+		{
+			"File": "prompt.data",
+			"Set": "windbg",
+			"Type": 1,
+			"Count": 0,
+			"Bucket": 0
+		},
+		{
+			"File": "prompt.data",
+			"Set": "windbg",
+			"Type": 2,
+			"Count": 0,
+			"Bucket": 0
+		},
+		{
+			"File": "ld.data",
+			"Set": "windbg",
+			"Type": 1,
+			"Count": 0,
+			"Bucket": 0
+		},
+		{
+			"File": "ld.data",
+			"Set": "windbg",
+			"Type": 2,
+			"Count": 0,
+			"Bucket": 0
+		},
+		{
+			"File": "ln.data",
+			"Set": "windbg",
+			"Type": 1,
+			"Count": 0,
+			"Bucket": 0
+		},
+		{
+			"File": "ln.data",
+			"Set": "windbg",
+			"Type": 2,
+			"Count": 0,
+			"Bucket": 0
+		},
+		{
+			"File": "reload.data",
+			"Set": "windbg",
+			"Type": 1,
+			"Count": 0,
+			"Bucket": 0
+		},
+		{
+			"File": "reload.data",
+			"Set": "windbg",
+			"Type": 2,
+			"Count": 0,
+			"Bucket": 0
+		},
+		{
+			"File": "sym.data",
+			"Set": "windbg",
+			"Type": 1,
+			"Count": 0,
+			"Bucket": 0
+		},
+		{
+			"File": "sym.data",
+			"Set": "windbg",
+			"Type": 2,
+			"Count": 0,
+			"Bucket": 0
+		},
+		{
+			"File": "sympath.data",
+			"Set": "windbg",
+			"Type": 1,
+			"Count": 0,
+			"Bucket": 0
+		},
+		{
+			"File": "sympath.data",
+			"Set": "windbg",
+			"Type": 2,
+			"Count": 0,
+			"Bucket": 0
+		},
+		{
+			"File": "x.data",
+			"Set": "windbg",
+			"Type": 1,
+			"Count": 0,
+			"Bucket": 0
+		},
+		{
+			"File": "x.data",
+			"Set": "windbg",
+			"Type": 2,
+			"Count": 0,
+			"Bucket": 0
+		}
+	]
 }

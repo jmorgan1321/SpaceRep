@@ -1,0 +1,7 @@
+{
+    "Word": "lm",
+    "Image": "list.png",
+    "Desc": "lists loaded loaded modules (and can filter bases on loaded (l), no symbols (e), module name (n), or module path (M)",
+    "Comp": "windbg command",
+    "Hint": "lm [v|l|e|k|u] [m|M Pattern]"
+}

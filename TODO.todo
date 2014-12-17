@@ -42,6 +42,7 @@ Server:
         ☐ Android
     TODO:
         ☐ Error on bad json load
+        ☐ make sure the -decks="dir/" works, as well as -decks="deck1,dir/,deck2" etc
         ☐ make debug build that dumps card html
         ☐ Add principles card
             type Principle struct {

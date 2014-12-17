@@ -367,6 +367,7 @@ func TestLoadDeck_DirsCanBeExcludedFromLoading(t *testing.T) {
 		// TODO: add length check here.  Deck should keep track of it's count?
 		// test.AssertEQ(t, len(testdata), len(deck), "Length mismatch")
 
+		// TODO: remove this when we get Deck.Length()
 		i := 0
 		for _, b := range deck {
 			for _ = range b {

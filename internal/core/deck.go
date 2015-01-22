@@ -3,11 +3,11 @@ package core
 import "math/rand"
 
 type Distribution [BucketCount]float32
-type Deck [BucketCount][]Card
+type Deck [BucketCount][]*Card
 
-func (d *Deck) GetCards(seed int64, dist Distribution) <-chan Card {
+func (d *Deck) GetCards(seed int64, dist Distribution) <-chan *Card {
 	r := rand.New(rand.NewSource(42))
-	ch := make(chan Card)
+	ch := make(chan *Card)
 
 	go func() {
 		for {
@@ -35,4 +35,15 @@ func (d *Deck) GetCards(seed int64, dist Distribution) <-chan Card {
 	}()
 
 	return ch
+}
+
+// TODO: spec this
+func (d *Deck) Count() int {
+	i := 0
+	for _, b := range d {
+		for _ = range b {
+			i++
+		}
+	}
+	return i
 }

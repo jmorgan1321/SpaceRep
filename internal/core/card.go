@@ -28,42 +28,37 @@ func init() {
 	ScopedTmplMap = map[string]TmplMap{}
 }
 
-type Card interface {
-	// Display
-	Type() string
-	Name() string
-	Clone(Info) Card
-	Tmpl() string
+// type Card interface {
+// 	// Info
+// 	Tmpl() string
+// 	Bucket() Bucket
+// 	UpdateBucket()
+// 	Set() string
+// 	Stats() *Info
+// }
 
-	// Info
-	Bucket() Bucket
-	UpdateBucket()
-	Set() string
-	Stats() *Info
+type Card struct {
+	Info
+	Data map[string]string
 }
 
 type Info struct {
-	File  string
-	S     string `json:"Set"`
-	Type  int
-	Count int
-	B     Bucket `json:"Bucket"`
+	File string
+	Set  string `json:"Set"`
+	// Type   int
+	Count  int
+	Bucket Bucket `json:"Bucket"`
+	Tmpl   string `json:"Tmpl"`
 }
 
-func (i *Info) Set() string {
-	return i.S
-}
-func (i *Info) Bucket() Bucket {
-	return i.B
-}
 func (i *Info) UpdateBucket() {
-	if i.Count >= i.B.GetMaxCount() {
+	if i.Count >= i.Bucket.GetMaxCount() {
 		i.Count = 0
-		i.B = i.B.NextBucket()
+		i.Bucket = i.Bucket.NextBucket()
 	}
 	if i.Count < 0 {
 		i.Count = 0
-		i.B = i.B.PrevBucket()
+		i.Bucket = i.Bucket.PrevBucket()
 	}
 }
 func (i *Info) IncCount() {
@@ -72,16 +67,13 @@ func (i *Info) IncCount() {
 func (i *Info) DecCount() {
 	i.Count--
 }
-func (i *Info) Stats() *Info {
-	return i
-}
 
-func Render(s ScopeTmplMap, c Card) (string, error) {
-	scopes := []string{c.Set(), "html"}
+func Render(s ScopeTmplMap, c *Card) (string, error) {
+	scopes := []string{c.Set, "html"}
 
 	for _, scope := range scopes {
 		if tmap, found := s[scope]; found {
-			if tmpl, found := tmap[c.Tmpl()]; found {
+			if tmpl, found := tmap[c.Tmpl]; found {
 				var html bytes.Buffer
 				if err := tmpl.Execute(&html, c); err != nil {
 					return "", err

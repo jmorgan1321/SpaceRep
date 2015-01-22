@@ -117,11 +117,12 @@ var testdir = &Node{
 											content: `
 											{
 												"Display": "basic",
+												"Templates": ["thisdoesx", "xdoesthis"],
 												"Info": [
-	                                                {"File": "add..data", "Type": 1, "Count": 7, "Bucket": 0 },
-	                                                {"File": "add..data", "Type": 2, "Count": 3, "Bucket": 1 },
-	                                                {"File": "branch.data", "Type": 1, "Count": 1, "Bucket": 2 },
-	                                                {"File": "branch.data", "Type": 2, "Count": 0, "Bucket": 3 }
+	                                                {"File": "add..data", "Tmpl":"thisdoesx", "Count": 7, "Bucket": 0 },
+	                                                {"File": "add..data", "Tmpl":"xdoesthis", "Count": 3, "Bucket": 1 },
+	                                                {"File": "branch.data", "Tmpl":"thisdoesx", "Count": 1, "Bucket": 2 },
+	                                                {"File": "branch.data", "Tmpl":"xdoesthis", "Count": 0, "Bucket": 3 }
                                             	]
                                             }`,
 										},
@@ -158,11 +159,12 @@ var testdir = &Node{
 											content: `
 											{
 												"Display": "basic",
+												"Templates": ["thisdoesx", "xdoesthis"],
 												"Info": [
-	                                                {"File": "push.data", "Type": 1, "Count": 2, "Bucket": 0 },
-	                                                {"File": "push.data", "Type": 2, "Count": 1, "Bucket": 1 },
-	                                                {"File": "commit.data", "Type": 1, "Count": 0, "Bucket": 2 },
-	                                                {"File": "commit.data", "Type": 2, "Count": 1, "Bucket": 3 }
+	                                                {"File": "push.data", "Tmpl": "thisdoesx", "Count": 2, "Bucket": 0 },
+	                                                {"File": "push.data", "Tmpl": "xdoesthis", "Count": 1, "Bucket": 1 },
+	                                                {"File": "commit.data", "Tmpl": "thisdoesx", "Count": 0, "Bucket": 2 },
+	                                                {"File": "commit.data", "Tmpl": "xdoesthis", "Count": 1, "Bucket": 3 }
 	                                            ]
                                            	}`,
 										},
@@ -250,11 +252,12 @@ var nestedTestdir = &Node{
 													content: `
 											{
 												"Display": "basic",
+												"Templates": ["thisdoesx", "xdoesthis"],
 												"Info": [
-	                                                {"File": "add..data", "Type": 1, "Count": 7, "Bucket": 0 },
-	                                                {"File": "add..data", "Type": 2, "Count": 3, "Bucket": 1 },
-	                                                {"File": "branch.data", "Type": 1, "Count": 1, "Bucket": 2 },
-	                                                {"File": "branch.data", "Type": 2, "Count": 0, "Bucket": 3 }
+	                                                {"File": "add..data", "Tmpl": "thisdoesx", "Count": 7, "Bucket": 0 },
+	                                                {"File": "add..data", "Tmpl": "xdoesthis", "Count": 3, "Bucket": 1 },
+	                                                {"File": "branch.data", "Tmpl": "thisdoesx", "Count": 1, "Bucket": 2 },
+	                                                {"File": "branch.data", "Tmpl": "xdoesthis", "Count": 0, "Bucket": 3 }
                                             	]
                                             }`,
 												},

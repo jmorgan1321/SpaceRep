@@ -41,6 +41,21 @@ Server:
     Open Questions:
         ☐ Android
     TODO:
+        ☐ SIMPLIFY deck loading to
+                Card {
+                    Map map[string]string
+                    core.Info
+                }
+            - cards.info
+                 Templates = thisdoesthat, thatdoesthis
+             - somecard.data
+                  {
+                    "Word": "commit",
+                    "Image": "exception.jpg",
+                    "Desc": "check in work you done (locally)",
+                    "Hint": "some hint",
+                    "Comp": "git command"
+                }
         ☐ Error on bad json load
         ☐ make sure the -decks="dir/" works, as well as -decks="deck1,dir/,deck2" etc
         ☐ make debug build that dumps card html
@@ -50,7 +65,7 @@ Server:
             }
         ☐ Remove "Set" from card info, test it
         ☐ Switch to  html/template
-        ☐ Render template once, on load?
+        ☐ Render template once, on load?€
             ☐ Examine - amount of strings in memory (and startup cost) vs. cost of template execution
                 ☐ Solution - Limit size of deck
                 ☐ Solution - Generate webpage when we start with each individual card in it's own <div class="card"></div>.  Then store each card in js array and use server to pick which elem to display.  This saves on memory (don't need the card in the memory anymore) and saves on speed (no longer rendering templates on load). Still limit size of deck.

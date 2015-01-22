@@ -8,71 +8,78 @@ import (
 	"testing"
 	"text/template"
 
-	"github.com/jmorgan1321/SpaceRep/displays/basic"
 	"github.com/jmorgan1321/SpaceRep/internal/core"
 	"github.com/jmorgan1321/SpaceRep/internal/test"
 )
 
 // HELPERS
 
-func checkCard(t *testing.T, i int, exp, act core.Card) {
-	checkDisplay(t, i, exp.(*basic.Card), act.(*basic.Card))
+func checkCard(t *testing.T, i int, exp, act *core.Card) {
+	checkDisplay(t, i, exp, act)
 	// TODO: fix
-	checkInfo(t, i, &exp.(*basic.Card).Info, &act.(*basic.Card).Info)
+	checkInfo(t, i, &exp.Info, &act.Info)
 }
 
-func checkDisplay(t *testing.T, i int, exp, act *basic.Card) {
-	test.ExpectEQ(t, exp.Word, act.Word, "card %d: Word match", i)
-	test.ExpectEQ(t, exp.Desc, act.Desc, "card %d: Desc match", i)
-	test.ExpectEQ(t, exp.Hint, act.Hint, "card %d: Hint match", i)
-	test.ExpectEQ(t, exp.Comp, act.Comp, "card %d: Comp match", i)
-	test.ExpectEQ(t, exp.Image, act.Image, "card %d: Image match", i)
+func checkDisplay(t *testing.T, i int, exp, act *core.Card) {
+	test.ExpectEQ(t, exp.Data["Word"], act.Data["Word"], "card %d: Word match", i)
+	test.ExpectEQ(t, exp.Data["Desc"], act.Data["Desc"], "card %d: Desc match", i)
+	test.ExpectEQ(t, exp.Data["Hint"], act.Data["Hint"], "card %d: Hint match", i)
+	test.ExpectEQ(t, exp.Data["Comp"], act.Data["Comp"], "card %d: Comp match", i)
+	test.ExpectEQ(t, exp.Data["Image"], act.Data["Image"], "card %d: Image match", i)
 }
 
 func checkInfo(t *testing.T, i int, exp, act *core.Info) {
-	test.ExpectEQ(t, exp.S, act.S, "card %d: Set match", i)
+	test.ExpectEQ(t, exp.Set, act.Set, "card %d: Set match", i)
 	test.ExpectEQ(t, exp.File, act.File, "card %d: Filenames match", i)
-	test.ExpectEQ(t, exp.Type, act.Type, "card %d: Type match", i)
+	test.ExpectEQ(t, exp.Tmpl, act.Tmpl, "card %d: Tmpl match", i)
 	test.ExpectEQ(t, exp.Count, act.Count, "card %d: Count match", i)
-	test.ExpectEQ(t, exp.B, act.B, "card %d: Bucket match", i)
+	test.ExpectEQ(t, exp.Bucket, act.Bucket, "card %d: Bucket match", i)
 }
 
 // TESTS
 
 func TestLoadDeck_Specific(t *testing.T) {
 	usingTestdir(t, testdir, func() {
-		testdata := []core.Card{
-			&basic.Card{
-				Word:  "add.",
-				Image: "add.jpg",
-				Desc:  "add. desc",
-				Hint:  "add. hint",
-				Comp:  "PowerPC instruction",
-				Info:  core.Info{S: "ppc", File: "add..data", Type: 1, Count: 7, B: 0},
+		testdata := []*core.Card{
+			&core.Card{
+				Data: map[string]string{
+					"Word":  "add.",
+					"Image": "add.jpg",
+					"Desc":  "add. desc",
+					"Hint":  "add. hint",
+					"Comp":  "PowerPC instruction",
+				},
+				Info: core.Info{Set: "ppc", File: "add..data", Tmpl: "thisdoesx", Count: 7, Bucket: 0},
 			},
-			&basic.Card{
-				Word:  "add.",
-				Image: "add.jpg",
-				Desc:  "add. desc",
-				Hint:  "add. hint",
-				Comp:  "PowerPC instruction",
-				Info:  core.Info{S: "ppc", File: "add..data", Type: 2, Count: 3, B: 1},
+			&core.Card{
+				Data: map[string]string{
+					"Word":  "add.",
+					"Image": "add.jpg",
+					"Desc":  "add. desc",
+					"Hint":  "add. hint",
+					"Comp":  "PowerPC instruction",
+				},
+				Info: core.Info{Set: "ppc", File: "add..data", Tmpl: "xdoesthis", Count: 3, Bucket: 1},
 			},
-			&basic.Card{
-				Word:  "branch",
-				Image: "branch.jpg",
-				Desc:  "branch desc",
-				Hint:  "branch hint",
-				Comp:  "PowerPC instruction",
-				Info:  core.Info{S: "ppc", File: "branch.data", Type: 1, Count: 1, B: 2},
+			&core.Card{
+				Data: map[string]string{
+					"Word":  "branch",
+					"Image": "branch.jpg",
+					"Desc":  "branch desc",
+					"Hint":  "branch hint",
+					"Comp":  "PowerPC instruction",
+				},
+				Info: core.Info{Set: "ppc", File: "branch.data", Tmpl: "thisdoesx", Count: 1, Bucket: 2},
 			},
-			&basic.Card{
-				Word:  "branch",
-				Image: "branch.jpg",
-				Desc:  "branch desc",
-				Hint:  "branch hint",
-				Comp:  "PowerPC instruction",
-				Info:  core.Info{S: "ppc", File: "branch.data", Type: 2, Count: 0, B: 3},
+			&core.Card{
+				Data: map[string]string{
+					"Word":  "branch",
+					"Image": "branch.jpg",
+					"Desc":  "branch desc",
+					"Hint":  "branch hint",
+					"Comp":  "PowerPC instruction",
+				},
+				Info: core.Info{Set: "ppc", File: "branch.data", Tmpl: "xdoesthis", Count: 0, Bucket: 3},
 			},
 		}
 
@@ -82,8 +89,7 @@ func TestLoadDeck_Specific(t *testing.T) {
 			Deck("ppc"),
 		).LoadDeck()
 		test.Assert(t, err == nil, "unexpected error: %v", err)
-		// TODO: add length check here.  Deck should keep track of it's count?
-		// test.AssertEQ(t, len(testdata), len(deck), "Length mismatch")
+		test.AssertEQ(t, len(testdata), deck.Count(), "wrong number of cards loaded")
 
 		i := 0
 		for _, b := range deck {
@@ -97,70 +103,86 @@ func TestLoadDeck_Specific(t *testing.T) {
 
 func TestMultipleDecksCanBeLoaded(t *testing.T) {
 	usingTestdir(t, testdir, func() {
-		testdata := []core.Card{
-			&basic.Card{
-				Word:  "push",
-				Image: "push.jpg",
-				Desc:  "push desc",
-				Hint:  "push hint",
-				Comp:  "git command",
-				Info:  core.Info{S: "git", File: "push.data", Type: 1, Count: 2, B: 0},
+		testdata := []*core.Card{
+			&core.Card{
+				Data: map[string]string{
+					"Word":  "push",
+					"Image": "push.jpg",
+					"Desc":  "push desc",
+					"Hint":  "push hint",
+					"Comp":  "git command",
+				},
+				Info: core.Info{Set: "git", File: "push.data", Tmpl: "thisdoesx", Count: 2, Bucket: 0},
 			},
-			&basic.Card{
-				Word:  "add.",
-				Image: "add.jpg",
-				Desc:  "add. desc",
-				Hint:  "add. hint",
-				Comp:  "PowerPC instruction",
-				Info:  core.Info{S: "ppc", File: "add..data", Type: 1, Count: 7, B: 0},
+			&core.Card{
+				Data: map[string]string{
+					"Word":  "add.",
+					"Image": "add.jpg",
+					"Desc":  "add. desc",
+					"Hint":  "add. hint",
+					"Comp":  "PowerPC instruction",
+				},
+				Info: core.Info{Set: "ppc", File: "add..data", Tmpl: "thisdoesx", Count: 7, Bucket: 0},
 			},
-			&basic.Card{
-				Word:  "push",
-				Image: "push.jpg",
-				Desc:  "push desc",
-				Hint:  "push hint",
-				Comp:  "git command",
-				Info:  core.Info{S: "git", File: "push.data", Type: 2, Count: 1, B: 1},
+			&core.Card{
+				Data: map[string]string{
+					"Word":  "push",
+					"Image": "push.jpg",
+					"Desc":  "push desc",
+					"Hint":  "push hint",
+					"Comp":  "git command",
+				},
+				Info: core.Info{Set: "git", File: "push.data", Tmpl: "xdoesthis", Count: 1, Bucket: 1},
 			},
-			&basic.Card{
-				Word:  "add.",
-				Image: "add.jpg",
-				Desc:  "add. desc",
-				Hint:  "add. hint",
-				Comp:  "PowerPC instruction",
-				Info:  core.Info{S: "ppc", File: "add..data", Type: 2, Count: 3, B: 1},
+			&core.Card{
+				Data: map[string]string{
+					"Word":  "add.",
+					"Image": "add.jpg",
+					"Desc":  "add. desc",
+					"Hint":  "add. hint",
+					"Comp":  "PowerPC instruction",
+				},
+				Info: core.Info{Set: "ppc", File: "add..data", Tmpl: "xdoesthis", Count: 3, Bucket: 1},
 			},
-			&basic.Card{
-				Word:  "commit",
-				Image: "commit.jpg",
-				Desc:  "commit desc",
-				Hint:  "commit hint",
-				Comp:  "git command",
-				Info:  core.Info{S: "git", File: "commit.data", Type: 1, Count: 0, B: 2},
+			&core.Card{
+				Data: map[string]string{
+					"Word":  "commit",
+					"Image": "commit.jpg",
+					"Desc":  "commit desc",
+					"Hint":  "commit hint",
+					"Comp":  "git command",
+				},
+				Info: core.Info{Set: "git", File: "commit.data", Tmpl: "thisdoesx", Count: 0, Bucket: 2},
 			},
-			&basic.Card{
-				Word:  "branch",
-				Image: "branch.jpg",
-				Desc:  "branch desc",
-				Hint:  "branch hint",
-				Comp:  "PowerPC instruction",
-				Info:  core.Info{S: "ppc", File: "branch.data", Type: 1, Count: 1, B: 2},
+			&core.Card{
+				Data: map[string]string{
+					"Word":  "branch",
+					"Image": "branch.jpg",
+					"Desc":  "branch desc",
+					"Hint":  "branch hint",
+					"Comp":  "PowerPC instruction",
+				},
+				Info: core.Info{Set: "ppc", File: "branch.data", Tmpl: "thisdoesx", Count: 1, Bucket: 2},
 			},
-			&basic.Card{
-				Word:  "commit",
-				Image: "commit.jpg",
-				Desc:  "commit desc",
-				Hint:  "commit hint",
-				Comp:  "git command",
-				Info:  core.Info{S: "git", File: "commit.data", Type: 2, Count: 0, B: 3},
+			&core.Card{
+				Data: map[string]string{
+					"Word":  "commit",
+					"Image": "commit.jpg",
+					"Desc":  "commit desc",
+					"Hint":  "commit hint",
+					"Comp":  "git command",
+				},
+				Info: core.Info{Set: "git", File: "commit.data", Tmpl: "xdoesthis", Count: 0, Bucket: 3},
 			},
-			&basic.Card{
-				Word:  "branch",
-				Image: "branch.jpg",
-				Desc:  "branch desc",
-				Hint:  "branch hint",
-				Comp:  "PowerPC instruction",
-				Info:  core.Info{S: "ppc", File: "branch.data", Type: 2, Count: 0, B: 3},
+			&core.Card{
+				Data: map[string]string{
+					"Word":  "branch",
+					"Image": "branch.jpg",
+					"Desc":  "branch desc",
+					"Hint":  "branch hint",
+					"Comp":  "PowerPC instruction",
+				},
+				Info: core.Info{Set: "ppc", File: "branch.data", Tmpl: "xdoesthis", Count: 0, Bucket: 3},
 			},
 		}
 
@@ -168,8 +190,7 @@ func TestMultipleDecksCanBeLoaded(t *testing.T) {
 			dir(testdir.name),
 		).LoadDeck()
 		test.Assert(t, err == nil, "unexpected error: %v", err)
-		// TODO: add length check here.  Deck should keep track of it's count?
-		// test.AssertEQ(t, len(testdata), len(deck), "Length mismatch")
+		test.AssertEQ(t, len(testdata), deck.Count(), "wrong number of cards loaded")
 
 		i := 0
 		for _, b := range deck {
@@ -194,38 +215,46 @@ func TestLoadDeck_SubPathDecksMustHaveSpecificNames(t *testing.T) {
 
 func TestLoadDeck_DecksCanHaveSubPaths(t *testing.T) {
 	usingTestdir(t, nestedTestdir, func() {
-		testdata := []core.Card{
-			&basic.Card{
-				Word:  "add.",
-				Image: "add.jpg",
-				Desc:  "add. desc",
-				Hint:  "add. hint",
-				Comp:  "PowerPC instruction",
-				Info:  core.Info{S: "facts\\ppc", File: "add..data", Type: 1, Count: 7, B: 0},
+		testdata := []*core.Card{
+			&core.Card{
+				Data: map[string]string{
+					"Word":  "add.",
+					"Image": "add.jpg",
+					"Desc":  "add. desc",
+					"Hint":  "add. hint",
+					"Comp":  "PowerPC instruction",
+				},
+				Info: core.Info{Set: "facts/ppc", File: "add..data", Tmpl: "thisdoesx", Count: 7, Bucket: 0},
 			},
-			&basic.Card{
-				Word:  "add.",
-				Image: "add.jpg",
-				Desc:  "add. desc",
-				Hint:  "add. hint",
-				Comp:  "PowerPC instruction",
-				Info:  core.Info{S: "facts\\ppc", File: "add..data", Type: 2, Count: 3, B: 1},
+			&core.Card{
+				Data: map[string]string{
+					"Word":  "add.",
+					"Image": "add.jpg",
+					"Desc":  "add. desc",
+					"Hint":  "add. hint",
+					"Comp":  "PowerPC instruction",
+				},
+				Info: core.Info{Set: "facts/ppc", File: "add..data", Tmpl: "xdoesthis", Count: 3, Bucket: 1},
 			},
-			&basic.Card{
-				Word:  "branch",
-				Image: "branch.jpg",
-				Desc:  "branch desc",
-				Hint:  "branch hint",
-				Comp:  "PowerPC instruction",
-				Info:  core.Info{S: "facts\\ppc", File: "branch.data", Type: 1, Count: 1, B: 2},
+			&core.Card{
+				Data: map[string]string{
+					"Word":  "branch",
+					"Image": "branch.jpg",
+					"Desc":  "branch desc",
+					"Hint":  "branch hint",
+					"Comp":  "PowerPC instruction",
+				},
+				Info: core.Info{Set: "facts/ppc", File: "branch.data", Tmpl: "thisdoesx", Count: 1, Bucket: 2},
 			},
-			&basic.Card{
-				Word:  "branch",
-				Image: "branch.jpg",
-				Desc:  "branch desc",
-				Hint:  "branch hint",
-				Comp:  "PowerPC instruction",
-				Info:  core.Info{S: "facts\\ppc", File: "branch.data", Type: 2, Count: 0, B: 3},
+			&core.Card{
+				Data: map[string]string{
+					"Word":  "branch",
+					"Image": "branch.jpg",
+					"Desc":  "branch desc",
+					"Hint":  "branch hint",
+					"Comp":  "PowerPC instruction",
+				},
+				Info: core.Info{Set: "facts/ppc", File: "branch.data", Tmpl: "xdoesthis", Count: 0, Bucket: 3},
 			},
 		}
 
@@ -235,8 +264,7 @@ func TestLoadDeck_DecksCanHaveSubPaths(t *testing.T) {
 			Deck("facts/ppc"),
 		).LoadDeck()
 		test.Assert(t, err == nil, "unexpected error: %v", err)
-		// TODO: add length check here.  Deck should keep track of it's count?
-		// test.AssertEQ(t, len(testdata), len(deck), "Length mismatch")
+		test.AssertEQ(t, len(testdata), deck.Count(), "wrong number of cards loaded")
 
 		i := 0
 		for _, b := range deck {
@@ -250,38 +278,46 @@ func TestLoadDeck_DecksCanHaveSubPaths(t *testing.T) {
 
 func TestLoadDeck_SubPaths_All(t *testing.T) {
 	usingTestdir(t, nestedTestdir, func() {
-		testdata := []core.Card{
-			&basic.Card{
-				Word:  "add.",
-				Image: "add.jpg",
-				Desc:  "add. desc",
-				Hint:  "add. hint",
-				Comp:  "PowerPC instruction",
-				Info:  core.Info{S: "facts\\ppc", File: "add..data", Type: 1, Count: 7, B: 0},
+		testdata := []*core.Card{
+			&core.Card{
+				Data: map[string]string{
+					"Word":  "add.",
+					"Image": "add.jpg",
+					"Desc":  "add. desc",
+					"Hint":  "add. hint",
+					"Comp":  "PowerPC instruction",
+				},
+				Info: core.Info{Set: "facts/ppc", File: "add..data", Tmpl: "thisdoesx", Count: 7, Bucket: 0},
 			},
-			&basic.Card{
-				Word:  "add.",
-				Image: "add.jpg",
-				Desc:  "add. desc",
-				Hint:  "add. hint",
-				Comp:  "PowerPC instruction",
-				Info:  core.Info{S: "facts\\ppc", File: "add..data", Type: 2, Count: 3, B: 1},
+			&core.Card{
+				Data: map[string]string{
+					"Word":  "add.",
+					"Image": "add.jpg",
+					"Desc":  "add. desc",
+					"Hint":  "add. hint",
+					"Comp":  "PowerPC instruction",
+				},
+				Info: core.Info{Set: "facts/ppc", File: "add..data", Tmpl: "xdoesthis", Count: 3, Bucket: 1},
 			},
-			&basic.Card{
-				Word:  "branch",
-				Image: "branch.jpg",
-				Desc:  "branch desc",
-				Hint:  "branch hint",
-				Comp:  "PowerPC instruction",
-				Info:  core.Info{S: "facts\\ppc", File: "branch.data", Type: 1, Count: 1, B: 2},
+			&core.Card{
+				Data: map[string]string{
+					"Word":  "branch",
+					"Image": "branch.jpg",
+					"Desc":  "branch desc",
+					"Hint":  "branch hint",
+					"Comp":  "PowerPC instruction",
+				},
+				Info: core.Info{Set: "facts/ppc", File: "branch.data", Tmpl: "thisdoesx", Count: 1, Bucket: 2},
 			},
-			&basic.Card{
-				Word:  "branch",
-				Image: "branch.jpg",
-				Desc:  "branch desc",
-				Hint:  "branch hint",
-				Comp:  "PowerPC instruction",
-				Info:  core.Info{S: "facts\\ppc", File: "branch.data", Type: 2, Count: 0, B: 3},
+			&core.Card{
+				Data: map[string]string{
+					"Word":  "branch",
+					"Image": "branch.jpg",
+					"Desc":  "branch desc",
+					"Hint":  "branch hint",
+					"Comp":  "PowerPC instruction",
+				},
+				Info: core.Info{Set: "facts/ppc", File: "branch.data", Tmpl: "xdoesthis", Count: 0, Bucket: 3},
 			},
 		}
 
@@ -290,8 +326,7 @@ func TestLoadDeck_SubPaths_All(t *testing.T) {
 			dir(nestedTestdir.name),
 		).LoadDeck()
 		test.Assert(t, err == nil, "unexpected error: %v", err)
-		// TODO: add length check here.  Deck should keep track of it's count?
-		// test.AssertEQ(t, len(testdata), len(deck), "Length mismatch")
+		test.AssertEQ(t, len(testdata), deck.Count(), "wrong number of cards loaded")
 
 		i := 0
 		for _, b := range deck {
@@ -305,38 +340,46 @@ func TestLoadDeck_SubPaths_All(t *testing.T) {
 
 func TestLoadDeck_DecksCanBeExcludedFromLoading(t *testing.T) {
 	usingTestdir(t, testdir, func() {
-		testdata := []core.Card{
-			&basic.Card{
-				Word:  "add.",
-				Image: "add.jpg",
-				Desc:  "add. desc",
-				Hint:  "add. hint",
-				Comp:  "PowerPC instruction",
-				Info:  core.Info{S: "ppc", File: "add..data", Type: 1, Count: 7, B: 0},
+		testdata := []*core.Card{
+			&core.Card{
+				Data: map[string]string{
+					"Word":  "add.",
+					"Image": "add.jpg",
+					"Desc":  "add. desc",
+					"Hint":  "add. hint",
+					"Comp":  "PowerPC instruction",
+				},
+				Info: core.Info{Set: "ppc", File: "add..data", Tmpl: "thisdoesx", Count: 7, Bucket: 0},
 			},
-			&basic.Card{
-				Word:  "add.",
-				Image: "add.jpg",
-				Desc:  "add. desc",
-				Hint:  "add. hint",
-				Comp:  "PowerPC instruction",
-				Info:  core.Info{S: "ppc", File: "add..data", Type: 2, Count: 3, B: 1},
+			&core.Card{
+				Data: map[string]string{
+					"Word":  "add.",
+					"Image": "add.jpg",
+					"Desc":  "add. desc",
+					"Hint":  "add. hint",
+					"Comp":  "PowerPC instruction",
+				},
+				Info: core.Info{Set: "ppc", File: "add..data", Tmpl: "xdoesthis", Count: 3, Bucket: 1},
 			},
-			&basic.Card{
-				Word:  "branch",
-				Image: "branch.jpg",
-				Desc:  "branch desc",
-				Hint:  "branch hint",
-				Comp:  "PowerPC instruction",
-				Info:  core.Info{S: "ppc", File: "branch.data", Type: 1, Count: 1, B: 2},
+			&core.Card{
+				Data: map[string]string{
+					"Word":  "branch",
+					"Image": "branch.jpg",
+					"Desc":  "branch desc",
+					"Hint":  "branch hint",
+					"Comp":  "PowerPC instruction",
+				},
+				Info: core.Info{Set: "ppc", File: "branch.data", Tmpl: "thisdoesx", Count: 1, Bucket: 2},
 			},
-			&basic.Card{
-				Word:  "branch",
-				Image: "branch.jpg",
-				Desc:  "branch desc",
-				Hint:  "branch hint",
-				Comp:  "PowerPC instruction",
-				Info:  core.Info{S: "ppc", File: "branch.data", Type: 2, Count: 0, B: 3},
+			&core.Card{
+				Data: map[string]string{
+					"Word":  "branch",
+					"Image": "branch.jpg",
+					"Desc":  "branch desc",
+					"Hint":  "branch hint",
+					"Comp":  "PowerPC instruction",
+				},
+				Info: core.Info{Set: "ppc", File: "branch.data", Tmpl: "xdoesthis", Count: 0, Bucket: 3},
 			},
 		}
 
@@ -345,8 +388,7 @@ func TestLoadDeck_DecksCanBeExcludedFromLoading(t *testing.T) {
 			dir(testdir.name),
 		).LoadDeck()
 		test.Assert(t, err == nil, "unexpected error: %v", err)
-		// TODO: add length check here.  Deck should keep track of it's count?
-		// test.AssertEQ(t, len(testdata), len(deck), "Length mismatch")
+		test.AssertEQ(t, len(testdata), deck.Count(), "wrong number of cards loaded")
 
 		i := 0
 		for _, b := range deck {
@@ -364,8 +406,7 @@ func TestLoadDeck_DirsCanBeExcludedFromLoading(t *testing.T) {
 			dir(testdir.name),
 		).LoadDeck()
 		test.Assert(t, err == nil, "unexpected error: %v", err)
-		// TODO: add length check here.  Deck should keep track of it's count?
-		// test.AssertEQ(t, len(testdata), len(deck), "Length mismatch")
+		// test.AssertEQ(t, len(testdata), deck.Count(), "wrong number of cards loaded")
 
 		// TODO: remove this when we get Deck.Length()
 		i := 0
@@ -411,7 +452,7 @@ func Test_getDeckInfo(t *testing.T) {
 	    "Info": [
 	        {
 	            "File": "add.",
-	            "Type": 1,
+	            "Tmpl": "thisdoesx",
 	            "Count": 0,
 	            "Bucket": 3,
 	            "FirstSeen": "0001-01-01T00:00:00Z",
@@ -419,7 +460,7 @@ func Test_getDeckInfo(t *testing.T) {
 	        },
 	        {
 	            "File": "add.",
-	            "Type": 2,
+	            "Tmpl": "xdoesthis",
 	            "Count": 2,
 	            "Bucket": 1,
 	            "FirstSeen": "0001-01-01T00:00:00Z",
@@ -434,8 +475,8 @@ func Test_getDeckInfo(t *testing.T) {
 	exp := deckInfo{
 		Display: "my-display",
 		Info: []*core.Info{
-			&core.Info{File: "add.", Type: 1, Count: 0, B: core.Yearly},
-			&core.Info{File: "add.", Type: 2, Count: 2, B: core.Weekly},
+			&core.Info{File: "add.", Tmpl: "thisdoesx", Count: 0, Bucket: core.Yearly},
+			&core.Info{File: "add.", Tmpl: "xdoesthis", Count: 2, Bucket: core.Weekly},
 		},
 	}
 
@@ -448,20 +489,42 @@ func Test_getDeckInfo(t *testing.T) {
 	checkInfo(t, 1, exp.Info[1], di.Info[1])
 }
 
-func Test_getCardTemplatesFromDisk(t *testing.T) {
+func Test_getCardDataFromDisk(t *testing.T) {
 	usingTestdir(t, testdir, func() {
 		testdata := []CardHolder{
-			{File: "add..data", Card: &basic.Card{Word: "add.", Image: "add.jpg", Desc: "add. desc", Hint: "add. hint", Comp: "PowerPC instruction"}},
-			{File: "branch.data", Card: &basic.Card{Word: "branch", Image: "branch.jpg", Desc: "branch desc", Hint: "branch hint", Comp: "PowerPC instruction"}},
+			{
+				File: "add..data",
+				Card: &core.Card{
+					Data: map[string]string{
+						"Word":  "add.",
+						"Image": "add.jpg",
+						"Desc":  "add. desc",
+						"Hint":  "add. hint",
+						"Comp":  "PowerPC instruction",
+					},
+				},
+			},
+			{
+				File: "branch.data",
+				Card: &core.Card{
+					Data: map[string]string{
+						"Word":  "branch",
+						"Image": "branch.jpg",
+						"Desc":  "branch desc",
+						"Hint":  "branch hint",
+						"Comp":  "PowerPC instruction",
+					},
+				},
+			},
 		}
 
 		path := testdir.name + "/html/decks/ppc/cards"
-		data, err := getCardTemplatesFromDisk(path, "basic")
+		data, err := getCardDataFromDisk(path, "basic")
 		test.Assert(t, err == nil, "getDataFromDisk: %v", err)
 
 		test.Assert(t, len(data) == len(testdata), "data length mismatch")
 		for i, exp := range testdata {
-			checkDisplay(t, i, exp.Card.(*basic.Card), data[i].Card.(*basic.Card))
+			checkDisplay(t, i, exp.Card, data[i].Card)
 		}
 	})
 }
@@ -479,27 +542,27 @@ func Test_getCardTemplatesFromDisk(t *testing.T) {
 // 				&basic.Display{Word: "branch", Image: "branch.jpg", Desc: "branch desc", Hint: "branch hint", Comp: "PowerPC instruction"},
 // 			},
 // 			info: []*core.Info{
-// 				core.Info{S: "ppc", File: "add.", Type: 1, Count: 7, B: 0},
-// 				core.Info{S: "ppc", File: "add.", Type: 2, Count: 3, B: 1},
-// 				core.Info{S: "ppc", File: "branch", Type: 1, Count: 1, B: 2},
-// 				core.Info{S: "ppc", File: "branch", Type: 2, Count: 0, B: 3},
+// 				core.Info{Set: "ppc", File: "add.", Tmpl: "thisdoesx", Count: 7, Bucket: 0},
+// 				core.Info{Set: "ppc", File: "add.", Tmpl: "xdoesthis", Count: 3, Bucket: 1},
+// 				core.Info{Set: "ppc", File: "branch", Tmpl: "thisdoesx", Count: 1, Bucket: 2},
+// 				core.Info{Set: "ppc", File: "branch", Tmpl: "xdoesthis", Count: 0, Bucket: 3},
 // 			},
 // 			exp: []*core.Card{
 // 				&core.Card{
 // 					Display: &basic.Display{Word: "add.", Image: "add.jpg", Desc: "add. desc", Hint: "add. hint", Comp: "PowerPC instruction"},
-// 					Info:    core.Info{S: "ppc", File: "add.", Type: 1, Count: 7, B: 0},
+// 					Info:    core.Info{Set: "ppc", File: "add.", Tmpl: "thisdoesx", Count: 7, Bucket: 0},
 // 				},
 // 				&core.Card{
 // 					Display: &basic.Display{Word: "add.", Image: "add.jpg", Desc: "add. desc", Hint: "add. hint", Comp: "PowerPC instruction"},
-// 					Info:    core.Info{S: "ppc", File: "add.", Type: 2, Count: 3, B: 1},
+// 					Info:    core.Info{Set: "ppc", File: "add.", Tmpl: "xdoesthis", Count: 3, Bucket: 1},
 // 				},
 // 				&core.Card{
 // 					Display: &basic.Display{Word: "branch", Image: "branch.jpg", Desc: "branch desc", Hint: "branch hint", Comp: "PowerPC instruction"},
-// 					Info:    core.Info{S: "ppc", File: "branch", Type: 1, Count: 1, B: 2},
+// 					Info:    core.Info{Set: "ppc", File: "branch", Tmpl: "thisdoesx", Count: 1, Bucket: 2},
 // 				},
 // 				&core.Card{
 // 					Display: &basic.Display{Word: "branch", Image: "branch.jpg", Desc: "branch desc", Hint: "branch hint", Comp: "PowerPC instruction"},
-// 					Info:    core.Info{S: "ppc", File: "branch", Type: 2, Count: 0, B: 3},
+// 					Info:    core.Info{Set: "ppc", File: "branch", Tmpl: "xdoesthis", Count: 0, Bucket: 3},
 // 				},
 // 			},
 // 		},
@@ -509,19 +572,19 @@ func Test_getCardTemplatesFromDisk(t *testing.T) {
 // 				&basic.Display{Word: "add.", Image: "add.jpg", Desc: "add. desc", Hint: "add. hint", Comp: "PowerPC instruction"},
 // 			},
 // 			info: []*core.Info{
-// 				core.Info{S: "ppc", File: "add.", Type: 1, Count: 7, B: 0},
-// 				core.Info{S: "ppc", File: "add.", Type: 2, Count: 3, B: 1},
-// 				core.Info{S: "ppc", File: "branch", Type: 1, Count: 1, B: 2},
-// 				core.Info{S: "ppc", File: "branch", Type: 2, Count: 0, B: 3},
+// 				core.Info{Set: "ppc", File: "add.", Tmpl: "thisdoesx", Count: 7, Bucket: 0},
+// 				core.Info{Set: "ppc", File: "add.", Tmpl: "xdoesthis", Count: 3, Bucket: 1},
+// 				core.Info{Set: "ppc", File: "branch", Tmpl: "thisdoesx", Count: 1, Bucket: 2},
+// 				core.Info{Set: "ppc", File: "branch", Tmpl: "xdoesthis", Count: 0, Bucket: 3},
 // 			},
 // 			exp: []*core.Card{
 // 				&core.Card{
 // 					Display: &basic.Display{Word: "add.", Image: "add.jpg", Desc: "add. desc", Hint: "add. hint", Comp: "PowerPC instruction"},
-// 					Info:    core.Info{S: "ppc", File: "add.", Type: 1, Count: 7, B: 0},
+// 					Info:    core.Info{Set: "ppc", File: "add.", Tmpl: "thisdoesx", Count: 7, Bucket: 0},
 // 				},
 // 				&core.Card{
 // 					Display: &basic.Display{Word: "add.", Image: "add.jpg", Desc: "add. desc", Hint: "add. hint", Comp: "PowerPC instruction"},
-// 					Info:    core.Info{S: "ppc", File: "add.", Type: 2, Count: 3, B: 1},
+// 					Info:    core.Info{Set: "ppc", File: "add.", Tmpl: "xdoesthis", Count: 3, Bucket: 1},
 // 				},
 // 			},
 // 		},
@@ -532,25 +595,25 @@ func Test_getCardTemplatesFromDisk(t *testing.T) {
 // 				&basic.Display{Word: "branch", Image: "branch.jpg", Desc: "branch desc", Hint: "branch hint", Comp: "PowerPC instruction"},
 // 			},
 // 			info: []*core.Info{
-// 				core.Info{S: "ppc", File: "branch", Type: 1, Count: 1, B: 2},
-// 				core.Info{S: "ppc", File: "branch", Type: 2, Count: 0, B: 3},
+// 				core.Info{Set: "ppc", File: "branch", Tmpl: "thisdoesx", Count: 1, Bucket: 2},
+// 				core.Info{Set: "ppc", File: "branch", Tmpl: "xdoesthis", Count: 0, Bucket: 3},
 // 			},
 // 			exp: []*core.Card{
 // 				&core.Card{
 // 					Display: &basic.Display{Word: "cmp", Image: "cmp.jpg", Desc: "cmp desc", Hint: "cmp hint", Comp: "PowerPC instruction"},
-// 					Info:    core.Info{S: "ppc", File: "cmp", Type: 1, Count: 0, B: 0},
+// 					Info:    core.Info{Set: "ppc", File: "cmp", Tmpl: "thisdoesx", Count: 0, Bucket: 0},
 // 				},
 // 				&core.Card{
 // 					Display: &basic.Display{Word: "cmp", Image: "cmp.jpg", Desc: "cmp desc", Hint: "cmp hint", Comp: "PowerPC instruction"},
-// 					Info:    core.Info{S: "ppc", File: "cmp", Type: 2, Count: 0, B: 0},
+// 					Info:    core.Info{Set: "ppc", File: "cmp", Tmpl: "xdoesthis", Count: 0, Bucket: 0},
 // 				},
 // 				&core.Card{
 // 					Display: &basic.Display{Word: "branch", Image: "branch.jpg", Desc: "branch desc", Hint: "branch hint", Comp: "PowerPC instruction"},
-// 					Info:    core.Info{S: "ppc", File: "branch", Type: 1, Count: 1, B: 2},
+// 					Info:    core.Info{Set: "ppc", File: "branch", Tmpl: "thisdoesx", Count: 1, Bucket: 2},
 // 				},
 // 				&core.Card{
 // 					Display: &basic.Display{Word: "branch", Image: "branch.jpg", Desc: "branch desc", Hint: "branch hint", Comp: "PowerPC instruction"},
-// 					Info:    core.Info{S: "ppc", File: "branch", Type: 2, Count: 0, B: 3},
+// 					Info:    core.Info{Set: "ppc", File: "branch", Tmpl: "xdoesthis", Count: 0, Bucket: 3},
 // 				},
 // 			},
 // 		},
@@ -576,16 +639,16 @@ func Test_getCardTemplatesFromDisk(t *testing.T) {
 // 	}{
 // 		{
 // 			in: []*core.Card{
-// 				&core.Card{Info: core.Info{Count: 8, B: 0}},
-// 				&core.Card{Info: core.Info{Count: 4, B: 1}},
-// 				&core.Card{Info: core.Info{Count: 1, B: 2}},
-// 				&core.Card{Info: core.Info{Count: -1, B: 3}},
+// 				&core.Card{Info: core.Info{Count: 8, Bucket: 0}},
+// 				&core.Card{Info: core.Info{Count: 4, Bucket: 1}},
+// 				&core.Card{Info: core.Info{Count: 1, Bucket: 2}},
+// 				&core.Card{Info: core.Info{Count: -1, Bucket: 3}},
 // 			},
 // 			exp: []*core.Card{
-// 				&core.Card{Info: core.Info{Count: 0, B: 1}},
-// 				&core.Card{Info: core.Info{Count: 0, B: 2}},
-// 				&core.Card{Info: core.Info{Count: 1, B: 2}},
-// 				&core.Card{Info: core.Info{Count: 0, B: 2}},
+// 				&core.Card{Info: core.Info{Count: 0, Bucket: 1}},
+// 				&core.Card{Info: core.Info{Count: 0, Bucket: 2}},
+// 				&core.Card{Info: core.Info{Count: 1, Bucket: 2}},
+// 				&core.Card{Info: core.Info{Count: 0, Bucket: 2}},
 // 			},
 // 		},
 // 	}
@@ -620,78 +683,6 @@ func Test_getCardTemplatesFromDisk(t *testing.T) {
 // 	test.Assert(t, false, "untested")
 // }
 
-// func TestCardInterface(t *testing.T) {
-// 	testdata := []struct {
-// 		info []Info
-// 		hldr []DispHolder
-// 		out  []Card
-// 		desc string
-// 	}{
-// 		{
-// 			info: []Info{
-// 				{File: "add.data", Type: 0},
-// 				{File: "add.data", Type: 1},
-// 			},
-// 			hldr: []DispHolder{
-// 				{File: "add.data", Disp: &BasicDisplay{Word: "add"}},
-// 			},
-// 			out: []Card{
-// 				&BasicDisplay{
-// 					Stat: Info{File: "add.data", Type: 0},
-// 					Word: "add",
-// 				},
-// 				&BasicDisplay{
-// 					Stat: Info{File: "add.data", Type: 1},
-// 					Word: "add",
-// 				},
-// 			},
-// 			desc: "basic case (no add, no del)",
-// 		},
-
-// 		{
-// 			info: []Info{},
-// 			hldr: []DispHolder{
-// 				{File: "add.data", Disp: &BasicDisplay{Word: "add"}},
-// 			},
-// 			out: []Card{
-// 				&BasicDisplay{
-// 					Stat: Info{File: "add.data", Type: 0},
-// 					Word: "add",
-// 				},
-// 				&BasicDisplay{
-// 					Stat: Info{File: "add.data", Type: 1},
-// 					Word: "add",
-// 				},
-// 			},
-// 			desc: "add add.data",
-// 		},
-
-// 		{
-// 			info: []Info{
-// 				{File: "add.data", Type: 0},
-// 				{File: "add.data", Type: 1},
-// 			},
-// 			hldr: []DispHolder{},
-// 			out:  []Card{},
-// 			desc: "del add.data",
-// 		},
-// 	}
-
-// 	for i, tt := range testdata {
-// 		cards := makeCards2("ppc", tt.info, tt.hldr)
-// 		test.Assert(t, len(cards) == len(tt.out), "test %v: len mismatch", i)
-
-// 		for j, exp := range tt.out {
-// 			act := cards[j]
-// 			checkCard2(t, j, exp, act)
-
-// 			if t.Failed() {
-// 				fmt.Printf("test %v, card %v: %v\n", i, j, tt.desc)
-// 			}
-// 		}
-// 	}
-// }
-
 // TODO: separate out tests into their correct packages.
 // TODO: test core package against mock interfaces, add tests for concrete types.
 
@@ -714,16 +705,16 @@ func TestCardRender(t *testing.T) {
 	}
 
 	testdata := []struct {
-		c   core.Card
+		c   *core.Card
 		exp string
 	}{
 		{
-			c:   &basic.Card{Info: core.Info{S: "ppc", Type: 1}},
+			c:   &core.Card{Info: core.Info{Set: "ppc", Tmpl: "thisdoesx"}},
 			exp: "local this does x",
 		},
 
 		{
-			c:   &basic.Card{Info: core.Info{S: "ppc", Type: 2}},
+			c:   &core.Card{Info: core.Info{Set: "ppc", Tmpl: "xdoesthat"}},
 			exp: "default x does that",
 		},
 	}

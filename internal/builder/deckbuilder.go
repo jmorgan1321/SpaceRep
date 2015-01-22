@@ -11,7 +11,6 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/jmorgan1321/SpaceRep/displays/factory"
 	"github.com/jmorgan1321/SpaceRep/internal/core"
 )
 
@@ -26,7 +25,6 @@ type Builder struct {
 	ex   []string // decks to ignore
 }
 
-// TODO: unexport
 type option func(*Builder)
 
 func New(opts ...option) *Builder {
@@ -188,25 +186,25 @@ func (b *Builder) LoadDeck() (*core.Deck, error) {
 			return nil, err
 		}
 
-		tmpls, err := getCardTemplatesFromDisk(root+"/cards", info.Display)
+		tmpls, err := getCardDataFromDisk(root+"/cards", info.Display)
 		if err != nil {
 			return nil, err
 		}
 
-		cards := makeCards(set, info.Info, tmpls)
+		cards := makeCards(set, info, tmpls)
 		updateBuckets(cards)
 
-		SaveDeck(root+"/cards/cards.info", info.Display, cards)
+		SaveDeck(root+"/cards/cards.info", info.Display, cards, info.Templates)
 
 		for _, c := range cards {
-			deck[c.Bucket()] = append(deck[c.Bucket()], c)
+			deck[c.Bucket] = append(deck[c.Bucket], c)
 		}
 	}
 
 	return deck, nil
 }
 
-func getCardTemplatesFromDisk(path, cardType string) ([]CardHolder, error) {
+func getCardDataFromDisk(path, cardType string) ([]CardHolder, error) {
 	alldata := []CardHolder{}
 
 	filepath.Walk(path, func(path string, fi os.FileInfo, err error) error {
@@ -223,12 +221,13 @@ func getCardTemplatesFromDisk(path, cardType string) ([]CardHolder, error) {
 
 		decoder := json.NewDecoder(file)
 
-		d, err := factory.DFE(cardType)
-		if err != nil {
+		data := map[string]string{}
+		if err := decoder.Decode(&data); err != nil {
 			panic(err)
 		}
-		decoder.Decode(d)
-		alldata = append(alldata, CardHolder{Card: d, File: filepath.Base(file.Name())})
+
+		c := &core.Card{Data: data}
+		alldata = append(alldata, CardHolder{Card: c, File: filepath.Base(file.Name())})
 
 		return nil
 	})
@@ -238,19 +237,21 @@ func getCardTemplatesFromDisk(path, cardType string) ([]CardHolder, error) {
 
 type CardHolder struct {
 	File string
-	Card core.Card
+	Card *core.Card
 }
 
-func makeCards(set string, info []*core.Info, hldr []CardHolder) []core.Card {
+func makeCards(set string, di *deckInfo, hldr []CardHolder) []*core.Card {
+	info := di.Info
+
 	// throw the info's in a map
 	fileMap := map[string]bool{}
 	for _, i := range info {
-		i.S = set
+		i.Set = set
 		fileMap[i.File] = false
 	}
 
-	cards := []core.Card{}
-	displayMap := map[string]core.Card{}
+	cards := []*core.Card{}
+	displayMap := map[string]*core.Card{}
 	// Figure out which displays are new, by checking against the fileMap.
 	// A display is new if it isn't in the fileMap.
 	for _, h := range hldr {
@@ -259,8 +260,13 @@ func makeCards(set string, info []*core.Info, hldr []CardHolder) []core.Card {
 		if _, found := fileMap[h.File]; found {
 			fileMap[h.File] = true
 		} else {
-			nc, _ := factory.MakeCards(d, core.Info{File: h.File, S: set})
-			cards = append(cards, nc...)
+			for _, tmpl := range di.Templates {
+				card := &core.Card{
+					Data: d.Data,
+					Info: core.Info{File: h.File, Set: set, Tmpl: tmpl},
+				}
+				cards = append(cards, card)
+			}
 		}
 	}
 
@@ -268,7 +274,10 @@ func makeCards(set string, info []*core.Info, hldr []CardHolder) []core.Card {
 	//	by checking against fileMap.
 	for _, i := range info {
 		if inBoth := fileMap[i.File]; inBoth {
-			c := displayMap[i.File].Clone(*i)
+			c := &core.Card{
+				Data: displayMap[i.File].Data,
+				Info: *i,
+			}
 			cards = append(cards, c)
 		}
 	}
@@ -277,8 +286,9 @@ func makeCards(set string, info []*core.Info, hldr []CardHolder) []core.Card {
 }
 
 type deckInfo struct {
-	Display string
-	Info    []*core.Info
+	Display   string
+	Templates []string
+	Info      []*core.Info
 }
 
 func getDeckInfo(path string) (*deckInfo, error) {
@@ -298,8 +308,8 @@ func getDeckInfo(path string) (*deckInfo, error) {
 	return &di, nil
 }
 
-func updateBuckets(cards []core.Card) []core.Card {
-	out := []core.Card{}
+func updateBuckets(cards []*core.Card) []*core.Card {
+	out := []*core.Card{}
 	for _, c := range cards {
 		c.UpdateBucket()
 		out = append(out, c)
@@ -307,14 +317,15 @@ func updateBuckets(cards []core.Card) []core.Card {
 	return out
 }
 
-func SaveDeck(path, display string, cards []core.Card) {
+func SaveDeck(path, display string, cards []*core.Card, tmpls []string) {
 	info := []*core.Info{}
 	for _, c := range cards {
 		// TODO: remove hard coded
-		info = append(info, c.Stats())
+		info = append(info, &c.Info)
 	}
 
-	d := deckInfo{Display: display, Info: info}
+	// TODO: read in old deck info (or store it), so that we can have templates
+	d := deckInfo{Display: display, Info: info, Templates: tmpls}
 	b, _ := json.MarshalIndent(d, "", "\t")
 
 	f, err := os.Create(path)
